@@ -1,0 +1,7 @@
+.idea/
+java/out/
+[bB]in/
+[dD]ebug/
+
+*.suo
+
