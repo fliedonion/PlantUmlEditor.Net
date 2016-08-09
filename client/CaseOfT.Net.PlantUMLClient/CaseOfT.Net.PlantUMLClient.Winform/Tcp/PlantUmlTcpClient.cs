@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlantUmlEditor.Net.Tcp {
+namespace CaseOfT.Net.PlantUMLClient.Tcp {
     class PlantUmlTcpClient {
 
         private const string ipAddr = "127.0.0.1";

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PlantUmlEditor.Net {
+namespace CaseOfT.Net.PlantUMLClient {
     static class Program {
         /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。
@@ -13,7 +13,7 @@ namespace PlantUmlEditor.Net {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new EditorForm());
+            Application.Run(new Form1());
         }
     }
 }

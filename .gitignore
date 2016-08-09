@@ -10,3 +10,5 @@ bgServer/out/
 *.user
 .vs/
 extra-jar/*.jar
+.hg/
+client/*/packages

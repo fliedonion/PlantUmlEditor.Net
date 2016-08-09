@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F772CB19-DF2E-4869-9387-92DF7DDA626F}</ProjectGuid>
+    <ProjectGuid>{34BD45F3-12DE-4383-BD20-8A1C5ECC7B24}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PlantUmlEditor.Net</RootNamespace>
-    <AssemblyName>PlantUmlEditor.Net</AssemblyName>
+    <RootNamespace>CaseOfT.Net.PlantUMLClient</RootNamespace>
+    <AssemblyName>CaseOfT.Net.PlantUMLClient</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

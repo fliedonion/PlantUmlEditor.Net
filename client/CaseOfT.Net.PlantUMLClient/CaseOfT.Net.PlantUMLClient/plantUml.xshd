@@ -1,0 +1,117 @@
+﻿<?xml version="1.0"?>
+<SyntaxDefinition name="PlantUML"
+                  xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<Color name="Comment" foreground="Green" />
+	<Color name="String" foreground="Green" />
+  <Color name="Keyword" foreground="Blue"/>
+
+	<!-- This is the main ruleset. -->
+	<RuleSet>
+
+    <!-- Actions/Misc -->
+    <Keywords color="Keyword">
+      <Word>activate</Word>
+      <Word>deactivate</Word>
+      <Word>destroy</Word>
+      <Word>create</Word>
+      <Word>as</Word>
+      <Word>autonumber</Word>
+    </Keywords>
+
+    <!-- Grouping/Organization -->
+		<Keywords color="Keyword">
+      <Word>package</Word>
+      <Word>end package</Word>
+      <Word>namespace</Word>
+      <Word>end namespace</Word>
+      <Word>partition</Word>
+      <Word>title</Word>
+      <Word>end title</Word>
+      <Word>box</Word>
+      <Word>end box</Word>
+		</Keywords>
+
+    <!-- Flow Control -->
+    <Keywords color="Keyword">
+      <Word>if</Word>
+      <Word>then</Word>
+      <Word>else</Word>
+      <Word>endif</Word>
+      <Word>opt</Word>
+      <Word>alt</Word>
+      <Word>loop</Word>
+      <Word>critical</Word>
+    </Keywords>
+
+    <!-- Entities -->
+    <Keywords color="Keyword">
+      <Word>abstract</Word>
+      <Word>actor</Word>
+      <Word>class</Word>
+      <Word>component</Word>
+      <Word>enum</Word>
+      <Word>interface</Word>
+      <Word>object</Word>
+      <Word>participant</Word>
+      <Word>state</Word>
+      <Word>usecase</Word>
+    </Keywords>
+
+    <Keywords fontWeight="bold" foreground="DarkRed">
+      <Word>@startuml</Word>
+      <Word>@enduml</Word>
+      <Word>(*)</Word>
+      <Word>[*]</Word>
+    </Keywords>
+    
+    <!-- Note Start -->
+    <Rule foreground="Blue">
+      note[^\S\n](left|right|top|bottom|over)(:|[^\S\n]of)?
+    </Rule>
+
+    <!-- Note End -->
+    <Rule foreground="Blue">
+      end[^\S\n]note
+    </Rule>
+
+    <!-- Right Solid Arrows -->
+    <Rule fontWeight="bold" foreground="DarkGreen">
+      (-+|-right-|-left-|-up-|-down-)&gt;
+    </Rule>
+
+    <!-- Left Solid Arrows -->
+    <Rule fontWeight="bold" foreground="DarkGreen">
+      &lt;(-+|-right-|-left-|-up-|-down-)
+    </Rule>
+
+    <!-- Right Dashed Arrows -->
+    <Rule fontWeight="bold" foreground="DarkGreen">
+      \.+&gt;
+    </Rule>
+
+    <!-- Left Dashed Arrows -->
+    <Rule fontWeight="bold" foreground="DarkGreen">
+      &lt;\.+
+    </Rule>
+
+    <!-- Fat head arrows -->
+    <Rule fontWeight="bold" foreground="DarkGreen">
+      -+\|&gt;|&lt;\|-+
+    </Rule>
+    
+    <!-- Arrow notes -->
+    <Rule foreground="DarkSlateBlue">
+      \[.+\]
+    </Rule>
+
+    <!-- Relations -->
+    <Rule fontWeight="bold" foreground="DarkCyan">
+      (-+(\+|\*|o))|((\+|\*|o)-+)
+    </Rule>
+
+    <Span color="Comment" begin="'" />
+    <Span color="Comment" multiline="true"
+          begin="/'" end="'/" />
+
+  </RuleSet>
+</SyntaxDefinition>

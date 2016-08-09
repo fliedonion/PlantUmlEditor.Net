@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PlantUmlEditor.Net.Properties {
+namespace CaseOfT.Net.PlantUMLClient.Properties {
 
 
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

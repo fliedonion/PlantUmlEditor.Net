@@ -1,0 +1,9 @@
+syntax: glob
+.vs/
+*.suo
+*.user
+[Dd]ebug/
+[bBin]/
+[oO]bj/
+[rR]elease/
+packages/

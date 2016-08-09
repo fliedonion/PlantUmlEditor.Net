@@ -1,0 +1,53 @@
+﻿<Window x:Class="CaseOfT.Net.PlantUMLClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CaseOfT.Net.PlantUMLClient"
+        xmlns:ViewModel="clr-namespace:CaseOfT.Net.PlantUMLClient"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Window.DataContext>
+        <ViewModel:Presenter />
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="96*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="151*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="34*"/>
+                <RowDefinition Height="287*"/>
+            </Grid.RowDefinitions>
+
+            <Button x:Name="button" 
+                    Content="Render"
+                    Grid.Column="0" Grid.Row="0"
+                    Width="75" Height="24"
+                    HorizontalAlignment="Left" VerticalAlignment="Top" 
+                    Command="{Binding ReverseTextCommand}"/>
+
+            <avalonEdit:TextEditor x:Name="sourceEditor" Grid.Column="0" Grid.Row="1"
+                               SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" Margin="0,0,0.333,-0.333" Grid.RowSpan="2">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <i:InvokeCommandAction
+                            Command="{Binding CountTextCommand}"
+                            />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <i:Interaction.Behaviors>
+                    <local:AvalonEditBehaviour Code="{Binding SomeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </i:Interaction.Behaviors>
+            </avalonEdit:TextEditor>
+        </Grid>
+
+        <!-- StackPanel Grid.Column="0" Background="Aquamarine" /-->
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center"/>
+        <WebBrowser Grid.Column="2" x:Name="browser" Margin="0,0,0,0" local:WebBrowserBehavior.Html="{Binding Test}"/>
+    </Grid>
+</Window>

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("PlantUmlEditor.Net")]
+[assembly: AssemblyTitle("CaseOfT.Net.PlantUMLClient")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PlantUmlEditor.Net")]
+[assembly: AssemblyProduct("CaseOfT.Net.PlantUMLClient")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // このプロジェクトが COM に公開される場合、次の GUID が typelib の ID になります
-[assembly: Guid("f772cb19-df2e-4869-9387-92df7dda626f")]
+[assembly: Guid("34bd45f3-12de-4383-bd20-8a1c5ecc7b24")]
 
 // アセンブリのバージョン情報は次の 4 つの値で構成されています:
 //

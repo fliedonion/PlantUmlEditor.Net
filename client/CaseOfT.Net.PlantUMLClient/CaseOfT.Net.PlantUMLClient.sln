@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantUmlEditor.Net", "PlantUmlEditor.Net\PlantUmlEditor.Net.csproj", "{F772CB19-DF2E-4869-9387-92DF7DDA626F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaseOfT.Net.PlantUMLClient", "CaseOfT.Net.PlantUMLClient\CaseOfT.Net.PlantUMLClient.csproj", "{B2C04080-E65C-4E9F-BAF0-CA9272850F50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F772CB19-DF2E-4869-9387-92DF7DDA626F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F772CB19-DF2E-4869-9387-92DF7DDA626F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F772CB19-DF2E-4869-9387-92DF7DDA626F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F772CB19-DF2E-4869-9387-92DF7DDA626F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2C04080-E65C-4E9F-BAF0-CA9272850F50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2C04080-E65C-4E9F-BAF0-CA9272850F50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2C04080-E65C-4E9F-BAF0-CA9272850F50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2C04080-E65C-4E9F-BAF0-CA9272850F50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
