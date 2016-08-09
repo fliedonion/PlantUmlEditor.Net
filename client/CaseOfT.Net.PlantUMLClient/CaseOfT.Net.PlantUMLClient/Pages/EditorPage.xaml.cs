@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,7 +28,22 @@ namespace CaseOfT.Net.PlantUMLClient {
                 sourceEditor.SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(xshd_reader, ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance);
             }
 
-            browser.NavigateToString("<html><body>Hello, World</body></html>");
+            browser.NavigateToString("<html><body>Enter Uml in Left Pane</body></html>");
+
+            var dispatcher = Dispatcher;
+            var keyUpStream = Observable.FromEvent<KeyEventHandler, KeyEventArgs>(
+                h => (_, ev) => h(ev),
+                h => sourceEditor.KeyUp += h,
+                h => sourceEditor.KeyUp -= h);
+            keyUpStream
+                .Select(x => x.Key)
+                .Throttle(new TimeSpan(0, 0, 0, 1))
+                .Subscribe(x => {
+                    dispatcher.Invoke(() => {
+                        ((Presenter)this.DataContext).RenderTextCommand.Execute("Do not empty avoid Avast incorrect detect.");
+                    });
+                });
+
         }
     }
 }

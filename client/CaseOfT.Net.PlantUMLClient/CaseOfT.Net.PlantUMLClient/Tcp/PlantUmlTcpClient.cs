@@ -13,6 +13,7 @@ namespace CaseOfT.Net.PlantUMLClient.Tcp {
         private int port = 3000;
 
         public string RenderRequest(string plantUml) {
+            if (String.IsNullOrEmpty(plantUml)) return "";
 
             var tcp = new TcpClient(ipAddr, port);
 

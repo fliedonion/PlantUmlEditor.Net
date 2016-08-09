@@ -48,17 +48,17 @@ namespace CaseOfT.Net.PlantUMLClient {
         }
 
 
-        public ICommand ReverseTextCommand
+        public ICommand RenderTextCommand
         {
-            get { return new DelegateCommand(ReverseText); }
+            get { return new DelegateCommand(RenderText); }
         }
 
-        private void ReverseText() {
+        private void RenderText() {
             AddToHistory(_someText);
 
             var thisText = _someText;
             new Task(() => {
-                var renderd = new PlantUmlTcpClient().RenderRequest(_someText);
+                var renderd = new PlantUmlTcpClient().RenderRequest(_someText??"");
                 Test = renderd;
             }).Start();
         }

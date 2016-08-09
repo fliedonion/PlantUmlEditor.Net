@@ -25,15 +25,27 @@
                 <RowDefinition Height="287*"/>
             </Grid.RowDefinitions>
 
-            <Button x:Name="button" 
-                    Content="Render"
+            <Button x:Name="renderButton" 
+                    Content="&#x1F503;"
                     Grid.Column="0" Grid.Row="0"
-                    Width="75" Height="24"
+                    Width="24" Height="24"
                     HorizontalAlignment="Left" VerticalAlignment="Top" 
-                    Command="{Binding ReverseTextCommand}"/>
+                    Command="{Binding RenderTextCommand}" Margin="168,0,0,0"/>
+            <Button x:Name="configButton" Content="&#x2699;" 
+                    Grid.Column="0" Grid.Row="0"
+                    HorizontalAlignment="Left" Margin="111,0,0,0" VerticalAlignment="Top" Width="22" FontSize="14"/>
+            <Button x:Name="openButton" Content="&#x1FBC2;" 
+                    Grid.Column="0" Grid.Row="0"
+                    HorizontalAlignment="Left" Margin="54,0,0,0" VerticalAlignment="Top" Width="22" Foreground="#FF5748C2" FontSize="14"/>
+            <Button x:Name="saveButton" Content="&#x1F4BE;" 
+                    Grid.Column="0" Grid.Row="0"
+                    HorizontalAlignment="Left" Margin="84,0,0,0" VerticalAlignment="Top" Width="22" Foreground="#FF5748C2" FontSize="14"/>
 
-            <avalonEdit:TextEditor x:Name="sourceEditor" Grid.Column="0" Grid.Row="1"
-                               SyntaxHighlighting="C#" ShowLineNumbers="True" FontFamily="Consolas" FontSize="10pt" Margin="0,0,0.333,-0.333" Grid.RowSpan="2">
+            <avalonEdit:TextEditor x:Name="sourceEditor"
+                                   Grid.Column="0" Grid.Row="1"
+                                   SyntaxHighlighting="C#" ShowLineNumbers="True" 
+                                   FontFamily="Consolas" 
+                                   FontSize="10pt" Margin="0,0,0.333,-0.333" Grid.RowSpan="2">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="TextChanged">
                         <i:InvokeCommandAction
@@ -45,6 +57,7 @@
                     <local:AvalonEditBehaviour Code="{Binding SomeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </i:Interaction.Behaviors>
             </avalonEdit:TextEditor>
+            
         </Grid>
 
         <!-- StackPanel Grid.Column="0" Background="Aquamarine" /-->

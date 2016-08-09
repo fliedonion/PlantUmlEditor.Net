@@ -26,8 +26,14 @@ namespace CaseOfT.Net.PlantUMLClient {
 
         static void OnHtmlChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
             WebBrowser webBrowser = dependencyObject as WebBrowser;
-            if (webBrowser != null)
-                webBrowser.NavigateToString(e.NewValue as string ?? "&nbsp;");
+            if (webBrowser != null) {
+                var newValue = e.NewValue as string;
+                if (string.IsNullOrEmpty(newValue)) {
+                    newValue = "<html><body>nothing to render</body></html>";
+                }
+                webBrowser.NavigateToString(newValue);
+            }
+                
         }
     }
 }
