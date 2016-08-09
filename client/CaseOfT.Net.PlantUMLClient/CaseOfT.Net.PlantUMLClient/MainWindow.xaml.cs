@@ -26,15 +26,6 @@ namespace CaseOfT.Net.PlantUMLClient {
         public MainWindow() {
             InitializeComponent();
             navi = mainFrame.NavigationService;
-
-            Stream xshd_stream = File.OpenRead("plantUml.xshd");
-            XmlTextReader xshd_reader = new XmlTextReader(xshd_stream);
-            sourceEditor.SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(xshd_reader, ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance);
-            xshd_reader.Close();
-            xshd_stream.Close();
-
-            browser.NavigateToString("<html><body>Hello, World</body></html>");
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
