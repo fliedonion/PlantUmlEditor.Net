@@ -45,7 +45,8 @@
                                    Grid.Column="0" Grid.Row="1"
                                    SyntaxHighlighting="C#" ShowLineNumbers="True" 
                                    FontFamily="Consolas" 
-                                   FontSize="10pt" Margin="0,0,0.333,-0.333" Grid.RowSpan="2">
+                                   FontSize="10pt" Margin="0,0,0.333,-0.333" Grid.RowSpan="2"
+                                   Text="@startuml&#x0A;Alice->Bob&#x0A;@enduml">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="TextChanged">
                         <i:InvokeCommandAction
