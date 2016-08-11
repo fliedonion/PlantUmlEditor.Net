@@ -62,18 +62,28 @@ namespace CaseOfT.Net.PlantUMLClient {
             }
         }
 
+        private string lastExportDirectory = null;
         private bool? exportEmf() {
 
             var dlg = new SaveFileDialog();
             dlg.FilterIndex = 1;
+            if(lastExportDirectory != null) {
+                dlg.InitialDirectory = lastExportDirectory;
+            }
             dlg.Title = "EMFファイルにエクスポートします";
             dlg.Filter = "EMF (*.emf)|*.emf|All Files(*.*)|*.*";
+            dlg.OverwritePrompt = true;
+            dlg.ValidateNames = true;
             bool? result = dlg.ShowDialog();
             if (result != null && result == true) {
+                var filename = dlg.FileName;
+                lastExportDirectory = new FileInfo(filename).Directory.FullName;
                 return SaveToSvg(dlg.FileName);
             }
             return result;
         }
+
+
 
         private bool SaveToSvg(string saveFilename) {
             try {
@@ -129,5 +139,45 @@ namespace CaseOfT.Net.PlantUMLClient {
             }
         }
 
+        private void configButton_Click(object sender, RoutedEventArgs e) {
+            NavigationService.Navigate(new Uri("Pages/ConfigurationPage.xaml", UriKind.Relative));
+        }
+
+        private string lastOpenUmlDirectory = null;
+        private void openButton_Click(object sender, RoutedEventArgs e) {
+            var dlg = new OpenFileDialog();
+            dlg.FilterIndex = 1;
+            if(lastOpenUmlDirectory != null) {
+                dlg.InitialDirectory = lastOpenUmlDirectory;
+            }
+            dlg.Title = "ロードします。";
+            dlg.Filter = "plantuml (*.puml, *.plantuml)|*.puml;*.plantuml|All Files(*.*)|*.*";
+            dlg.Multiselect = false;
+            dlg.CheckFileExists = true;
+            bool? result = dlg.ShowDialog();
+            if (result != null && result == true) {
+                sourceEditor.Text = File.ReadAllText(dlg.FileName, Encoding.UTF8);
+                var filename = dlg.FileName;
+                lastOpenUmlDirectory = new FileInfo(filename).Directory.FullName;
+            }
+        }
+
+        private void saveButton_Click(object sender, RoutedEventArgs e) {
+            var dlg = new SaveFileDialog();
+            dlg.FilterIndex = 1;
+            if (lastOpenUmlDirectory != null) {
+                dlg.InitialDirectory = lastOpenUmlDirectory;
+            }
+            dlg.Title = "テキストを保存します。";
+            dlg.Filter = "plantuml (*.puml)|*.puml|All Files(*.*)|*.*";
+            dlg.OverwritePrompt = true;
+            dlg.ValidateNames = true;
+            bool? result = dlg.ShowDialog();
+            if (result != null && result == true) {
+                File.WriteAllText(dlg.FileName, sourceEditor.Text, Encoding.UTF8);
+                var filename = dlg.FileName;
+                lastOpenUmlDirectory = new FileInfo(filename).Directory.FullName;
+            }
+        }
     }
 }

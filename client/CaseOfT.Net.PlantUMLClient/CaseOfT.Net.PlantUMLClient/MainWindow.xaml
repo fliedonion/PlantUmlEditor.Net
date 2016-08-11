@@ -9,6 +9,6 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
-    <Frame Name="mainFrame">
+    <Frame Name="mainFrame" NavigationUIVisibility="Hidden">
     </Frame>
 </Window>

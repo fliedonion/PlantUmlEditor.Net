@@ -13,9 +13,10 @@
     <Page.Resources>
         <Storyboard x:Key="StartAnimation">
             <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="configButton">
+                <EasingThicknessKeyFrame KeyTime="0" Value="0,0,180.105,0"/>
                 <EasingThicknessKeyFrame KeyTime="0:0:0.5" Value="0,0,20,0">
                     <EasingThicknessKeyFrame.EasingFunction>
-                        <CubicEase EasingMode="EaseOut"/>
+                        <QuarticEase EasingMode="EaseOut"/>
                     </EasingThicknessKeyFrame.EasingFunction>
                 </EasingThicknessKeyFrame>
             </ThicknessAnimationUsingKeyFrames>
@@ -26,6 +27,26 @@
                     </EasingThicknessKeyFrame.EasingFunction>
                 </EasingThicknessKeyFrame>
             </ThicknessAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="grid1">
+                <EasingDoubleKeyFrame KeyTime="0" Value="-30"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CircleEase EasingMode="EaseOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="grid1">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0.9"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CircleEase EasingMode="EaseOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="grid1">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0.3"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Page.Resources>
     <Page.Triggers>
@@ -36,13 +57,29 @@
     <Page.DataContext>
         <ViewModel:Presenter />
     </Page.DataContext>
-    <Grid>
+    <Grid x:Name="grid1" RenderTransformOrigin="0.5,0.5">
+        <Grid.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform/>
+                <SkewTransform/>
+                <RotateTransform/>
+                <TranslateTransform/>
+            </TransformGroup>
+        </Grid.RenderTransform>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="96*"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="151*"/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
+        <Grid x:Name="grid" Grid.Column="0" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
             <Grid.RowDefinitions>
                 <RowDefinition Height="34*" MinHeight="28"/>
                 <RowDefinition Height="287*"/>
@@ -50,13 +87,14 @@
 
             <Button x:Name="configButton" Content="&#x2699;" 
                     Grid.Column="0" Grid.Row="0"
-                    HorizontalAlignment="Right" Margin="0,0,180.105,0" VerticalAlignment="Top" Width="22" FontSize="14"/>
-            <Button x:Name="openButton" Content="&#x1FBC2;" 
+                    HorizontalAlignment="Right" Margin="0,0,180.105,0" VerticalAlignment="Top" Width="22" FontSize="14" Click="configButton_Click"/>
+            <!--"&#x1FBC2;" -->
+            <Button x:Name="openButton" Content="開"
                     Grid.Column="0" Grid.Row="0"
-                    HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Foreground="#FF5748C2" FontSize="14"/>
+                    HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Foreground="#FF5748C2" FontSize="14" Click="openButton_Click"/>
             <Button x:Name="saveButton" Content="&#x1F4BE;" 
                     Grid.Column="0" Grid.Row="0"
-                    HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Foreground="#FF5748C2" FontSize="14" d:LayoutOverrides="HorizontalAlignment" Margin="0"/>
+                    HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Foreground="#FF5748C2" FontSize="14" d:LayoutOverrides="HorizontalAlignment" Margin="0" Click="saveButton_Click"/>
 
             <avalonEdit:TextEditor x:Name="sourceEditor"
                                    Grid.Column="0" Grid.Row="1"
