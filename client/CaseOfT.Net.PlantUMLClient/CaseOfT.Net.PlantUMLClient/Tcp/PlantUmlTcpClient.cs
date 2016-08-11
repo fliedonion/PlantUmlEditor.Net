@@ -15,37 +15,41 @@ namespace CaseOfT.Net.PlantUMLClient.Tcp {
         public string RenderRequest(string plantUml) {
             if (String.IsNullOrEmpty(plantUml)) return "";
 
-            var tcp = new TcpClient(ipAddr, port);
+            using (var tcp = new TcpClient(ipAddr, port)) {
+                if (tcp.Connected) {
+                    var ns = tcp.GetStream();
+                    ns.ReadTimeout = 10000;
+                    ns.WriteTimeout = 10000;
 
-            var ns = tcp.GetStream();
-            ns.ReadTimeout = 10000;
-            ns.WriteTimeout = 10000;
+                    var sendData = Encoding.UTF8.GetBytes(plantUml);
 
-            var sendData = Encoding.UTF8.GetBytes(plantUml);
-
-            var sizeInfo = BitConverter.GetBytes(sendData.Length).ToList();
-            sizeInfo.Reverse();
+                    var sizeInfo = BitConverter.GetBytes(sendData.Length).ToList();
+                    sizeInfo.Reverse();
 
 
-            ns.Write(sizeInfo.ToArray(), 0, 4);
-            ns.Write(sendData, 0, sendData.Length);
-            var resBytes = new byte[256];
-            var ms = new MemoryStream();
-            int resSize = 0;
-            do {
-                resSize = ns.Read(resBytes, 0, resBytes.Length);
-                if (resSize == 0) break;
+                    ns.Write(sizeInfo.ToArray(), 0, 4);
+                    ns.Write(sendData, 0, sendData.Length);
 
-                ms.Write(resBytes, 0, resSize);
+                    var resBytes = new byte[256];
+                    var ms = new MemoryStream();
+                    int resSize = 0;
+                    do {
+                        resSize = ns.Read(resBytes, 0, resBytes.Length);
+                        if (resSize == 0) break;
 
-            } while (ns.DataAvailable);
+                        ms.Write(resBytes, 0, resSize);
 
-            string returnValue = Encoding.UTF8.GetString(ms.ToArray());
-            ms.Close();
-            ns.Close();
-            tcp.Close();
+                    } while (ns.DataAvailable);
 
-            return returnValue;
+                    string returnValue = Encoding.UTF8.GetString(ms.ToArray());
+                    ms.Close();
+                    ns.Close();
+                    return returnValue;
+                }else {
+                    return "";
+                }
+            }
+
         }
 
     }

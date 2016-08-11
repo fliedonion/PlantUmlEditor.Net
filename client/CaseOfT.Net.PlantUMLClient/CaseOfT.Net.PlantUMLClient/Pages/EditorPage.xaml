@@ -10,6 +10,29 @@
       mc:Ignorable="d" 
       d:DesignHeight="350" d:DesignWidth="525"
       Title="Editor">
+    <Page.Resources>
+        <Storyboard x:Key="StartAnimation">
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="configButton">
+                <EasingThicknessKeyFrame KeyTime="0:0:0.5" Value="0,0,20,0">
+                    <EasingThicknessKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseOut"/>
+                    </EasingThicknessKeyFrame.EasingFunction>
+                </EasingThicknessKeyFrame>
+            </ThicknessAnimationUsingKeyFrames>
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="saveButton">
+                <EasingThicknessKeyFrame KeyTime="0:0:0.5" Value="24,0,0,0">
+                    <EasingThicknessKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseOut"/>
+                    </EasingThicknessKeyFrame.EasingFunction>
+                </EasingThicknessKeyFrame>
+            </ThicknessAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
+    <Page.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource StartAnimation}"/>
+        </EventTrigger>
+    </Page.Triggers>
     <Page.DataContext>
         <ViewModel:Presenter />
     </Page.DataContext>
@@ -25,21 +48,15 @@
                 <RowDefinition Height="287*"/>
             </Grid.RowDefinitions>
 
-            <Button x:Name="renderButton" 
-                    Content="&#x1F503;"
-                    Grid.Column="0" Grid.Row="0"
-                    Width="24" Height="24"
-                    HorizontalAlignment="Left" VerticalAlignment="Top" 
-                    Command="{Binding RenderTextCommand}" Margin="168,0,0,0"/>
             <Button x:Name="configButton" Content="&#x2699;" 
                     Grid.Column="0" Grid.Row="0"
-                    HorizontalAlignment="Left" Margin="111,0,0,0" VerticalAlignment="Top" Width="22" FontSize="14"/>
+                    HorizontalAlignment="Right" Margin="0,0,180.105,0" VerticalAlignment="Top" Width="22" FontSize="14"/>
             <Button x:Name="openButton" Content="&#x1FBC2;" 
                     Grid.Column="0" Grid.Row="0"
-                    HorizontalAlignment="Left" Margin="54,0,0,0" VerticalAlignment="Top" Width="22" Foreground="#FF5748C2" FontSize="14"/>
+                    HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Foreground="#FF5748C2" FontSize="14"/>
             <Button x:Name="saveButton" Content="&#x1F4BE;" 
                     Grid.Column="0" Grid.Row="0"
-                    HorizontalAlignment="Left" Margin="84,0,0,0" VerticalAlignment="Top" Width="22" Foreground="#FF5748C2" FontSize="14"/>
+                    HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Foreground="#FF5748C2" FontSize="14" d:LayoutOverrides="HorizontalAlignment" Margin="0"/>
 
             <avalonEdit:TextEditor x:Name="sourceEditor"
                                    Grid.Column="0" Grid.Row="1"
@@ -58,11 +75,23 @@
                     <local:AvalonEditBehaviour Code="{Binding SomeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </i:Interaction.Behaviors>
             </avalonEdit:TextEditor>
-            
+
         </Grid>
 
         <!-- StackPanel Grid.Column="0" Background="Aquamarine" /-->
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center"/>
-        <WebBrowser Grid.Column="2" x:Name="browser" Margin="0,0,0,0" local:WebBrowserBehavior.Html="{Binding Test}"/>        
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="34*" MinHeight="28"/>
+                <RowDefinition Height="287*"/>
+            </Grid.RowDefinitions>
+            <Button x:Name="renderButton" 
+                    Content="&#x1F503;"
+                    Grid.Column="0" Grid.Row="0"
+                    Width="24" Height="24"
+                    HorizontalAlignment="Right" VerticalAlignment="Top" 
+                    Command="{Binding RenderTextCommand}" Margin="0,0,10,0"/>
+            <WebBrowser Grid.Row="1" x:Name="browser" Margin="0,0,0,0" local:WebBrowserBehavior.Html="{Binding Test}"/>
+        </Grid>
     </Grid>
 </Page>
