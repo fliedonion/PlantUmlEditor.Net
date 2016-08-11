@@ -92,6 +92,7 @@
                     HorizontalAlignment="Right" VerticalAlignment="Top" 
                     Command="{Binding RenderTextCommand}" Margin="0,0,10,0"/>
             <WebBrowser Grid.Row="1" x:Name="browser" Margin="0,0,0,0" local:WebBrowserBehavior.Html="{Binding Test}"/>
+            <Button x:Name="exportEmfButton" Content="export EMF ..." HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top" Width="90" Click="exportEmfButton_Click"/>
         </Grid>
     </Grid>
 </Page>
