@@ -4,114 +4,63 @@
 	<Color name="Comment" foreground="Green" />
 	<Color name="String" foreground="Green" />
   <Color name="Keyword" foreground="Blue"/>
+  <Color name="StartEnd" foreground="Blue"/>
+  <Color name="Direction" foreground="DarkRed"/>
+  <Color name="Arrow" foreground="Gray"/>
 
-	<!-- This is the main ruleset. -->
+  <!-- This is the main ruleset. -->
 	<RuleSet>
+    <Span color="Comment" begin="'" />
+    <Span color="Comment" multiline="true" begin="/'" end="'/" />
 
-    <!-- Actions/Misc -->
-    <Keywords color="Keyword">
-      <Word>activate</Word>
-      <Word>deactivate</Word>
-      <Word>destroy</Word>
-      <Word>create</Word>
-      <Word>as</Word>
-      <Word>autonumber</Word>
-    </Keywords>
+    <!-- Direction -->
+    <Rule fontWeight="bold" color="Direction">
+      \btop\s+to\s+bottom\s+direction\b
+      |  \bbottom\s+to\s+top\s+direction\b
+      |  \bright\s+to\s+left\s+direction\b
+      |  \bleft\s+to\s+right\s+direction\b
+    </Rule>
 
-    <!-- Grouping/Organization -->
-		<Keywords color="Keyword">
-      <Word>package</Word>
-      <Word>end package</Word>
-      <Word>namespace</Word>
-      <Word>end namespace</Word>
-      <Word>partition</Word>
-      <Word>title</Word>
-      <Word>end title</Word>
-      <Word>box</Word>
-      <Word>end box</Word>
-		</Keywords>
+    <!-- actor -->
+    <Rule fontWeight="bold" color="Keyword">
+      ^\s*actor\b
+    </Rule>
 
-    <!-- Flow Control -->
-    <Keywords color="Keyword">
-      <Word>if</Word>
-      <Word>then</Word>
-      <Word>else</Word>
-      <Word>endif</Word>
-      <Word>opt</Word>
-      <Word>alt</Word>
-      <Word>loop</Word>
-      <Word>critical</Word>
-    </Keywords>
-
-    <!-- Entities -->
-    <Keywords color="Keyword">
-      <Word>abstract</Word>
-      <Word>actor</Word>
-      <Word>class</Word>
-      <Word>component</Word>
-      <Word>enum</Word>
-      <Word>interface</Word>
-      <Word>object</Word>
-      <Word>participant</Word>
-      <Word>state</Word>
-      <Word>usecase</Word>
-    </Keywords>
-
-    <Keywords fontWeight="bold" foreground="DarkRed">
+    <Keywords fontWeight="bold" color="StartEnd">
       <Word>@startuml</Word>
       <Word>@enduml</Word>
       <Word>(*)</Word>
       <Word>[*]</Word>
-    </Keywords>
+    </Keywords>    
     
-    <!-- Note Start -->
-    <Rule foreground="Blue">
-      note[^\S\n](left|right|top|bottom|over)(:|[^\S\n]of)?
+    <!-- Arrow -->
+    <Rule color="Arrow">
+      &lt;(-+)&gt;
+      | &lt;(-+)
+      | (-+)&gt;
+      <!-- there are many arrow types. -->
     </Rule>
-
-    <!-- Note End -->
-    <Rule foreground="Blue">
-      end[^\S\n]note
-    </Rule>
-
-    <!-- Right Solid Arrows -->
-    <Rule fontWeight="bold" foreground="DarkGreen">
-      (-+|-right-|-left-|-up-|-down-)&gt;
-    </Rule>
-
-    <!-- Left Solid Arrows -->
-    <Rule fontWeight="bold" foreground="DarkGreen">
-      &lt;(-+|-right-|-left-|-up-|-down-)
-    </Rule>
-
-    <!-- Right Dashed Arrows -->
-    <Rule fontWeight="bold" foreground="DarkGreen">
+    <Rule color="Arrow">
       \.+&gt;
+      | &lt;\.+
+      | \.+\|&gt;
+      | &lt;|\.+
+      | -+\|&gt;
+      | &lt;\|-+
+      | \*-+&gt;
+      | &lt;-+\*
     </Rule>
-
-    <!-- Left Dashed Arrows -->
-    <Rule fontWeight="bold" foreground="DarkGreen">
-      &lt;\.+
+    <Rule color="Arrow">
+      \*-+
+      | -+\*
+      | o-+
+      | -+o
+      | \b\.+\b
+      | \b-+\b
     </Rule>
-
-    <!-- Fat head arrows -->
-    <Rule fontWeight="bold" foreground="DarkGreen">
-      -+\|&gt;|&lt;\|-+
+    <Rule color="Arrow">
+      \b&lt;?(-+)(left|right|up|down|l|r|u|d|le|ri|do)(-+)&gt;?\b
     </Rule>
-    
-    <!-- Arrow notes -->
-    <Rule foreground="DarkSlateBlue">
-      \[.+\]
-    </Rule>
-
-    <!-- Relations -->
-    <Rule fontWeight="bold" foreground="DarkCyan">
-      (-+(\+|\*|o))|((\+|\*|o)-+)
-    </Rule>
-
-    <Span color="Comment" begin="'" />
-    <Span color="Comment" multiline="true"
-          begin="/'" end="'/" />
 
   </RuleSet>
 </SyntaxDefinition>
