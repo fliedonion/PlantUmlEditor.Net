@@ -30,6 +30,12 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                 write.offset = 0;
                 write.writedata = Encoding.UTF8.GetBytes(value + "\n\n");
 
+                var sizeInfo = BitConverter.GetBytes(write.writedata.Length).ToList();
+                sizeInfo.Reverse();
+
+                pipeServer.Write(sizeInfo.ToArray(), 0, 4);
+                pipeServer.WaitForPipeDrain();
+
                 pipeServer.BeginWrite(write.writedata, 0, Math.Min(write.writedata.Length, OutBufferSize), BeginWriteCallback, write);
                 pipeServer.WaitForPipeDrain();
                 return true;

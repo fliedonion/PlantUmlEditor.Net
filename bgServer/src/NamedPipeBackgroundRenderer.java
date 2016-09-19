@@ -13,12 +13,57 @@ public class NamedPipeBackgroundRenderer {
     }
 
     static void communicate(String serverName){
+        Logger logger = new Logger(1);
+        int retryConnectionLimit = 50;
 
         RandomAccessFile pipe = null;
         try {
-            // if check `new File("\\\\.\\pipe\\" + serverName).exists()`, pipe instance become busy.
+            logger.infoLog("Wait server start.");
+            System.out.println("Waiting server stands up ");
 
-            pipe = new RandomAccessFile("\\\\.\\pipe\\" + serverName, "rw");
+            // if check `new File("\\\\.\\pipe\\" + serverName).exists()`, pipe instance become busy.
+            while(retryConnectionLimit > 0){
+                try{
+                    pipe = new RandomAccessFile("\\\\.\\pipe\\" + serverName, "rw");
+                    break;
+                }
+                catch( FileNotFoundException ex){
+                    System.out.print(".");
+                    retryConnectionLimit--;
+                    try{
+                        Thread.sleep( 1000 );
+                    }
+                    catch( InterruptedException e) {
+                    }
+                }
+            }
+            if(retryConnectionLimit == 0){
+                System.out.println();
+                System.out.println("Error: Connection Timeout.");
+                logger.infoLog("Wait server timeout.");
+                return;
+            }
+            logger.infoLog("Wait server end.");
+
+            logger.infoLog("Read loop start.");
+
+            // byte[] sizeInfo = new byte[4];
+            // try{
+            //     while(true) {
+            //         pipe.readFully(sizeInfo);
+            //         ByteBuffer wrapped = ByteBuffer.wrap(sizeInfo);
+            //         int size = wrapped.getInt();
+            //         byte[] resBytes = new byte[size];
+            //         pipe.readFully(resBytes);
+            //         final String data = new String(resBytes, Charset.forName("UTF-8"));
+            //         pipe.readFully(sizeInfo);
+            //     }
+            // }catch(IOException ioex){
+            //     ioex.printStackTrace();
+            // }
+            //
+            // if(sizeInfo==null) return;
+
 
             while(pipe.length() == 0){
                 // TODO: use readFully instead of readLine, after Test server closed behavior.
@@ -36,10 +81,10 @@ public class NamedPipeBackgroundRenderer {
                     echoResponse += "\n" + pipe.readLine();
                 }
                 if(echoResponse == null){
-                    System.out.println("Server is closed.");
+                    logger.infoLog("Server is closed.");
                     break;
                 }
-                System.out.println("Response: " + echoResponse);
+                logger.debugLog("Response: " + echoResponse);
                 if(echoResponse.equals("<EXIT>")){
                     break;
                 }
@@ -62,7 +107,7 @@ public class NamedPipeBackgroundRenderer {
                 if(pipe !=null) pipe.close();
             }catch(Exception e) {}
         }
+        logger.infoLog("Read loop end.");
+
     }
-
-
 }
