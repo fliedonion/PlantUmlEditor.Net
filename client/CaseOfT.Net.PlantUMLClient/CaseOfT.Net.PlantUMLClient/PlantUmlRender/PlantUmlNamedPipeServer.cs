@@ -15,6 +15,9 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
         NamedPipeServerStream pipeServer = null;
         NamedPipeData connect;
 
+        public event Action<string> ReadData;
+        public event EventHandler JavaClientClose;
+
         private const int InBufferSize = 128;
         private const int OutBufferSize = 128;
 
@@ -33,8 +36,8 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                 var sizeInfo = BitConverter.GetBytes(write.writedata.Length).ToList();
                 sizeInfo.Reverse();
 
-                pipeServer.Write(sizeInfo.ToArray(), 0, 4);
-                pipeServer.WaitForPipeDrain();
+                //pipeServer.Write(sizeInfo.ToArray(), 0, 4);
+                //pipeServer.WaitForPipeDrain();
 
                 pipeServer.BeginWrite(write.writedata, 0, Math.Min(write.writedata.Length, OutBufferSize), BeginWriteCallback, write);
                 pipeServer.WaitForPipeDrain();
@@ -168,6 +171,7 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                     Debug.WriteLine("[PIPE SERVER] Client may disconnect. ");
                     clientMayDisconnected = true;
                     pd.pipe.Close();
+                    if(JavaClientClose!=null) JavaClientClose(this, new EventArgs());
                 }
                 else {
 
@@ -175,7 +179,8 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                     if (bytesRead != 0) {
                         // PutLog("[PIPE SERVER] Read: " + Encoding.UTF8.GetString(pd.readdata));
                         var s = Encoding.UTF8.GetString(pd.readdata);
-                        Debug.WriteLine(s.Substring(0, Math.Min(100, s.Length)));
+                        if (ReadData != null) ReadData(s);
+                        // Debug.WriteLine(s.Substring(0, Math.Min(100, s.Length)));
                     }
 
                     var read = new NamedPipeReadData(connect);
