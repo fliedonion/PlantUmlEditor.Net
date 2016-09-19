@@ -91,6 +91,8 @@
     </Compile>
     <Compile Include="ObservableObject.cs" />
     <Compile Include="PlantUmlRender\IPlantUmlRender.cs" />
+    <Compile Include="PlantUmlRender\PlantUmlNamedPipeRender.cs" />
+    <Compile Include="PlantUmlRender\PlantUmlNamedPipeServer.cs" />
     <Compile Include="Presenter.cs" />
     <Compile Include="PlantUmlRender\PlantUmlTcpClient.cs" />
     <Compile Include="WebBrowserBehavior.cs" />

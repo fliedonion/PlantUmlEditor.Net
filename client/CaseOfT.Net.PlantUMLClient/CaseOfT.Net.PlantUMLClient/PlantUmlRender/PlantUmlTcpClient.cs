@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
+    [Obsolete()]
     class PlantUmlTcpClient : IPlantUmlRender {
 
         private const string ipAddr = "127.0.0.1";

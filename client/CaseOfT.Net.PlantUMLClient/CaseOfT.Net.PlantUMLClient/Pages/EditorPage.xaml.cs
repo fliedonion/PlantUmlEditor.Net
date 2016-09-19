@@ -86,7 +86,8 @@ namespace CaseOfT.Net.PlantUMLClient {
 
         // TODO: duplicate with Presenter.CreateRender
         private IPlantUmlRender CreateRender() {
-            return new PlantUmlTcpClient();
+            // return new PlantUmlTcpClient();
+            return new PlantUmlNamedPipeRender();
         }
 
         private bool SaveToSvg(string saveFilename) {

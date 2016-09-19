@@ -65,7 +65,8 @@ namespace CaseOfT.Net.PlantUMLClient {
 
 
         private IPlantUmlRender CreateRender() {
-            return new PlantUmlTcpClient();
+            // return new PlantUmlTcpClient();
+            return new PlantUmlNamedPipeRender();
         }
 
         private void AddToHistory(string item) {
