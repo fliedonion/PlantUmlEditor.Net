@@ -10,9 +10,8 @@ namespace CaseOfT.Net.PlantUMLClient {
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void RaisePropertyChangedEvent(string propertyName) {
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
