@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -89,8 +90,9 @@
       <DependentUpon>EditorPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ObservableObject.cs" />
+    <Compile Include="PlantUmlRender\IPlantUmlRender.cs" />
     <Compile Include="Presenter.cs" />
-    <Compile Include="Tcp\PlantUmlTcpClient.cs" />
+    <Compile Include="PlantUmlRender\PlantUmlTcpClient.cs" />
     <Compile Include="WebBrowserBehavior.cs" />
     <Page Include="Pages\ConfigurationPage.xaml">
       <SubType>Designer</SubType>

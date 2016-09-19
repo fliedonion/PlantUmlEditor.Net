@@ -1,4 +1,4 @@
-﻿using CaseOfT.Net.PlantUMLClient.Tcp;
+﻿using CaseOfT.Net.PlantUMLClient.PlantUmlRender;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -58,9 +58,14 @@ namespace CaseOfT.Net.PlantUMLClient {
 
             var thisText = _someText;
             new Task(() => {
-                var renderd = new PlantUmlTcpClient().RenderRequest(_someText??"");
+                var renderd = CreateRender().RenderRequest(_someText??"");
                 Test = renderd;
             }).Start();
+        }
+
+
+        private IPlantUmlRender CreateRender() {
+            return new PlantUmlTcpClient();
         }
 
         private void AddToHistory(string item) {

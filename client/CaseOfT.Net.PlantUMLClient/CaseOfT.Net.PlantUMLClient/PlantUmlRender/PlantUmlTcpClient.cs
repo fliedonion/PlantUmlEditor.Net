@@ -6,8 +6,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CaseOfT.Net.PlantUMLClient.Tcp {
-    class PlantUmlTcpClient {
+namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
+    class PlantUmlTcpClient : IPlantUmlRender {
 
         private const string ipAddr = "127.0.0.1";
         private int port = 3000;

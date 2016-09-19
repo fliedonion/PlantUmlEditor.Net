@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using CaseOfT.Net.PlantUMLClient.PlantUmlRender;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -83,12 +84,14 @@ namespace CaseOfT.Net.PlantUMLClient {
             return result;
         }
 
-
+        // TODO: duplicate with Presenter.CreateRender
+        private IPlantUmlRender CreateRender() {
+            return new PlantUmlTcpClient();
+        }
 
         private bool SaveToSvg(string saveFilename) {
             try {
-                var tcp = new Tcp.PlantUmlTcpClient();
-                var svg = tcp.RenderRequest(sourceEditor.Text);
+                var svg = CreateRender().RenderRequest(sourceEditor.Text);
                 return ExportToEmf(svg, saveFilename);
             }
             catch (Exception ex) {
