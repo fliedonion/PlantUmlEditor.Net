@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
     [Obsolete()]
-    class PlantUmlTcpClient : IPlantUmlRender {
+    class PlantUmlTcpClientRender : IPlantUmlRender {
 
         private const string ipAddr = "127.0.0.1";
         private int port = 3000;
