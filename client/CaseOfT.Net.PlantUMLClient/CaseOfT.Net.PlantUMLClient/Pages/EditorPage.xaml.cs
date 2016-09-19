@@ -40,7 +40,7 @@ namespace CaseOfT.Net.PlantUMLClient {
                 h => sourceEditor.KeyUp -= h);
             keyUpStream
                 .Select(x => x.Key)
-                .Throttle(new TimeSpan(0, 0, 0, 1))
+                .Where(x => x != Key.Up && x != Key.Down && x != Key.Left && x != Key.Right)                .Throttle(new TimeSpan(0, 0, 0, 1))
                 .Subscribe(x => {
                     dispatcher.Invoke(() => {
                         ((Presenter)this.DataContext).RenderTextCommand.Execute("Do not empty avoid Avast incorrect detect.");
