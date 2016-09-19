@@ -61,6 +61,9 @@ public class NamedPipeBackgroundRenderer {
             // }catch(IOException ioex){
             //     ioex.printStackTrace();
             // }
+            // }catch(EOFException eofex){
+            //     // ioex.printStackTrace(); // may be connection closed.
+            // }
             //
             // if(sizeInfo==null) return;
 
