@@ -15,6 +15,9 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
         NamedPipeServerStream pipeServer = null;
         NamedPipeData connect;
 
+        private const int InBufferSize = 128;
+        private const int OutBufferSize = 128;
+
         private bool disposing = false;
         private bool clientMayDisconnected = false;
 
@@ -104,8 +107,6 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
             pipeServer.BeginWaitForConnection(BeginWaitForConnectionCallback, connect);
         }
 
-        public const int InBufferSize = 4096;
-        public const int OutBufferSize = 4096;
 
 
         private void BeginWaitForConnectionCallback(IAsyncResult ar) {
@@ -167,7 +168,8 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                     int bytesRead = pd.pipe.EndRead(ar);
                     if (bytesRead != 0) {
                         // PutLog("[PIPE SERVER] Read: " + Encoding.UTF8.GetString(pd.readdata));
-                        Debug.WriteLine(Encoding.UTF8.GetString(pd.readdata).Substring(0, 100));
+                        var s = Encoding.UTF8.GetString(pd.readdata);
+                        Debug.WriteLine(s.Substring(0, Math.Min(100, s.Length)));
                     }
 
                     var read = new NamedPipeReadData(connect);

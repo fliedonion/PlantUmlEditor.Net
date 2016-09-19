@@ -8,13 +8,6 @@
     <cabalPath>C:\opt\Haskell Platform\8.0.1\lib\extralibs\bin\cabal.exe</cabalPath>
     <stackPath>C:\Users\Takahiro\AppData\Roaming\local\bin\stack.exe</stackPath>
   </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHome" value="Bundled (Maven 3)" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
       <profile-state>

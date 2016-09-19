@@ -51,7 +51,7 @@ public class BackgroundRenderer {
                     final String data = new String(resBytes, Charset.forName("UTF-8"));
 
                     os = new PrintStream(recSocket.getOutputStream());
-                    os.println(generateSvg(data));
+                    os.println(PlantUmlWrapper.generateSvg(data));
                     if (!recSocket.isConnected()) recSocket.close();
                 }catch(EOFException ex){
                     System.out.println("EOF:");
@@ -66,18 +66,4 @@ public class BackgroundRenderer {
             System.out.println(ex);
         }
     }
-
-    private static String generateSvg(String data){
-        SourceStringReader reader = new SourceStringReader(data);
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try{
-            String desc = reader.generateImage(os, new FileFormatOption(FileFormat.SVG));
-            os.close();
-            return new String(os.toByteArray(), Charset.forName("UTF-8"));
-        }catch(IOException ex){
-            return ex.toString();
-        }
-
-    }
-
 }

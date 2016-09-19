@@ -101,7 +101,7 @@
                                    SyntaxHighlighting="C#" ShowLineNumbers="True" 
                                    FontFamily="Consolas" 
                                    FontSize="10pt" Margin="0,0,0.333,-0.333" Grid.RowSpan="2"
-                                   Text="@startuml&#x0A;Alice->Bob&#x0A;@enduml">
+                                   Text="@startuml&#x0A;Alice->Bob&#x0A;@enduml&#x0A;// hit enter before run java namedpipe client.">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="TextChanged">
                         <i:InvokeCommandAction
