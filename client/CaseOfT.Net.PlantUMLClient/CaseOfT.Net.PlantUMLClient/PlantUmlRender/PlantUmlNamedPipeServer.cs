@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -101,6 +102,47 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
             public byte[] writedata;
         };
 
+        private Process currentProcess;
+
+        internal void RunClient() {
+            var java = @"C:\ProgramData\Oracle\Java\javapath\java.exe";
+            var jar = @"D:\repos\PlantUmlEditor.Net\bgServer\out\artifacts\net_case_of_t_plant_uml_editor_net_bgrender_jar\net.case-of-t.plant-uml-editor-net-bgrender.jar";
+
+            var p = new Process();
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.CreateNoWindow = true;
+
+            p.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+            p.StartInfo.FileName = java;
+            p.StartInfo.Arguments = " -jar " + jar + " VSDebug=true";
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardError = true;
+            p.StartInfo.StandardOutputEncoding = new UTF8Encoding();
+            p.OutputDataReceived += (sender, args) => {
+                                        Debug.WriteLine(args.Data);
+                                    };
+            p.ErrorDataReceived += (sender, args) => {
+                                       Debug.WriteLine("error: " + args.Data);
+                                   };
+
+            if (!p.Start()) {
+                Debug.Print(p.StandardOutput.ReadToEnd());
+                Debug.Print(p.StandardError.ReadToEnd());
+            }
+            else {
+                p.EnableRaisingEvents = true;
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+                p.Exited += (sender, args) => {
+                    Debug.WriteLine("client process exited.");
+                    // restart server.
+                    StartServer();
+                };
+            }
+        }
+
+
+
 
         internal void StartServer() {
             if (pipeServer != null /* && pipeServer.IsConnected */) {
@@ -112,7 +154,14 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                 connect.IsDiscard = true;
             }
 
-            pipeServer = new NamedPipeServerStream(NamedPipeServerNamePrefix, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+            currentProcess = Process.GetCurrentProcess();
+            if (currentProcess.ProcessName.EndsWith("vshost")) {
+                pipeServer = new NamedPipeServerStream(NamedPipeServerNamePrefix, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+            }
+            else {
+                pipeServer = new NamedPipeServerStream(NamedPipeServerNamePrefix + "-" + currentProcess.Id, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+
+            }
             connect = new NamedPipeData();
             connect.pipe = pipeServer;
 

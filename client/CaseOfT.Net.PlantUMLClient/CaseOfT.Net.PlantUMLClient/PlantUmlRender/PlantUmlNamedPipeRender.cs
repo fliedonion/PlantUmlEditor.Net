@@ -18,6 +18,7 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
             get {
                 if (server == null) {
                     server = new PlantUmlNamedPipeServer();
+                    server.RunClient();
                     server.StartServer();
                     server.JavaClientClose += (sender, args) => { server.StartServer(); };
                 }
@@ -46,7 +47,6 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
             tcs.Task.ContinueWith(ts => {
                                         if (handler != null) {
                                             Server.ReadData -= handler;
-                                            Debug.Print("handler Removed.");
                                         }
                                     });
             return tcs.Task;
