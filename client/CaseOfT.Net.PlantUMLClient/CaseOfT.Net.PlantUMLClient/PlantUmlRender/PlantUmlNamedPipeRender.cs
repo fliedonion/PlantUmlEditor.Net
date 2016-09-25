@@ -19,7 +19,6 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                 if (server == null) {
                     server = new PlantUmlNamedPipeServer();
                     server.StartServer();
-                    server.ReadData += s => { Debug.WriteLine(s); };
                     server.JavaClientClose += (sender, args) => { server.StartServer(); };
                 }
                 return server;
@@ -27,12 +26,31 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
         }
 
         public string RenderRequest(string plantUmlSource) {
-            if (Server.SendRenderRequest(plantUmlSource)) {
-                return string.Empty;
-            }
-            else {
-                return "Can't communicate java side";
-            }
+
+            var t = FromNamedPipeServer(plantUmlSource);
+            t.Wait();
+
+            return t.Result;
         }
+
+        private Task<string> FromNamedPipeServer(string plantUmlSource) {
+
+            var tcs = new TaskCompletionSource<string>();
+            Action<string> handler = s => { tcs.SetResult(s); };
+            Server.ReadData += handler;
+            if (!Server.SendRenderRequest(plantUmlSource)) {
+                tcs.SetResult("Can't communicate java side");
+                Server.ReadData -= handler;
+                handler = null;
+            }
+            tcs.Task.ContinueWith(ts => {
+                                        if (handler != null) {
+                                            Server.ReadData -= handler;
+                                            Debug.Print("handler Removed.");
+                                        }
+                                    });
+            return tcs.Task;
+        }
+
     }
 }
