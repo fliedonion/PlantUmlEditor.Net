@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/net_case_of_t_plant_uml_editor_net_bgrender_jar</output-path>
     <root id="archive" name="net.case-of-t.plant-uml-editor-net-bgrender.jar">
       <element id="module-output" name="net.case-of-t.plant-uml-editor-net-bgrender" />
-      <element id="extracted-dir" path="C:/usr/local/lib/plantuml.jar" path-in-jar="/" />
+      <element id="library" level="project" name="plantuml" />
     </root>
   </artifact>
 </component>
