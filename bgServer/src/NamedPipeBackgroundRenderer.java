@@ -197,7 +197,7 @@ public class NamedPipeBackgroundRenderer {
 
         boolean firstTime = true;
         while(true){
-            if(isServerProcessAlive(serverInfo)){
+            if(!isServerProcessAlive(serverInfo)){
                 logger.infoLog("Server process was gone. Program will exit.");
                 break;
             }
