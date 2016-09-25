@@ -6,6 +6,8 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -188,8 +190,62 @@ public class NamedPipeBackgroundRenderer {
         }
         logger.infoLog("NamedPipeServer Detected.");
 
+        waitRequest(pi);
 
+        logger.infoLog("Read loop end.");
+    }
+
+
+    private void waitRequest(ParentInfo pi){
+        try(RandomAccessFile pipe = new RandomAccessFile("\\\\.\\pipe\\" + getServerName(pi), "rw")){
+            byte[] sizeInfo = new byte[4];
+            String data = "";
+            try{
+                while(true) {
+                    pipe.readFully(sizeInfo);
+                    ByteBuffer wrapped = ByteBuffer.wrap(sizeInfo);
+                    int size = wrapped.getInt();
+                    if(size > 0) {
+                        byte[] reqBytes = new byte[size];
+                        pipe.readFully(reqBytes);
+                        data = new String(reqBytes, Charset.forName("UTF-8"));
+
+                        if(data.equals("+OK Accepted.\n")){
+                            System.out.println("Receive communicate message.");
+                        }else{
+                            byte[] resBytes = PlantUmlWrapper.generateSvg(data).getBytes("utf-8");
+                            byte[] sendSizeInfo = ByteBuffer.allocate(4).putInt(resBytes.length).array();
+                            pipe.write(sendSizeInfo);
+                            pipe.write(resBytes);
+                        }
+                    }else{
+                        System.out.println("size is 0. skip.");
+                    }
+                }
+            }catch(EOFException eofex){
+                // ioex.printStackTrace(); // may be connection closed.
+            }catch(IOException ioex){
+                ioex.printStackTrace();
+            }
+
+        } catch( FileNotFoundException nex){
+            // Namedpipe detected but FileNotFoundException occurred.
+            System.out.println("NamedPipe Not Found. Program will exit.");
+            return;
+        } catch( IOException e){
+            System.out.println("IOError.");
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+
+    private void obsoleteCode() throws Exception{
+        Logger logger = new Logger(1);
         RandomAccessFile pipe = null;
+        String namedPipeServerName = serverNameBase;
         try {
             logger.infoLog("NamedPipeServer Detected.");
             pipe = new RandomAccessFile("\\\\.\\pipe\\" + namedPipeServerName, "rw");
@@ -265,7 +321,6 @@ public class NamedPipeBackgroundRenderer {
                 if(pipe !=null) pipe.close();
             }catch(Exception e) {}
         }
-        logger.infoLog("Read loop end.");
-
     }
+
 }

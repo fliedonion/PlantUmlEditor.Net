@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
     class PlantUmlNamedPipeRender : IPlantUmlRender {
 
+        internal PlantUmlNamedPipeRender() {
+            var s = Server;
+        }
+
         private static PlantUmlNamedPipeServer server = null;
 
         private static PlantUmlNamedPipeServer Server {

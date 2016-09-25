@@ -24,6 +24,16 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
         private bool disposing = false;
         private bool clientMayDisconnected = false;
 
+
+        private byte[] CreateSendBytes(string value) {
+            var body = Encoding.UTF8.GetBytes(value);
+            var sizeInfo = BitConverter.GetBytes(body.Length).ToList();
+            sizeInfo.Reverse();
+            sizeInfo.AddRange(body);
+            body = null;
+            return sizeInfo.ToArray();
+        }
+
         public bool SendRenderRequest(string value) {
             if (disposing) return false;
 
@@ -31,14 +41,7 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                 var write = new NamedPipeWriteData(connect);
                 write.pipe = pipeServer;
                 write.offset = 0;
-                write.writedata = Encoding.UTF8.GetBytes(value + "\n\n");
-
-                var sizeInfo = BitConverter.GetBytes(write.writedata.Length).ToList();
-                sizeInfo.Reverse();
-
-                //pipeServer.Write(sizeInfo.ToArray(), 0, 4);
-                //pipeServer.WaitForPipeDrain();
-
+                write.writedata = CreateSendBytes(value + "\n\n");
                 pipeServer.BeginWrite(write.writedata, 0, Math.Min(write.writedata.Length, OutBufferSize), BeginWriteCallback, write);
                 pipeServer.WaitForPipeDrain();
                 return true;
@@ -83,8 +86,9 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
             }
             public NamedPipeServerStream pipe;
             public NamedPipeData connect;
-            public Object state;
-            public Byte[] readdata;
+            public int TotalSize;
+            public byte[] readThisTime;
+            public List<byte> readdata = new List<byte>();
         };
 
         class NamedPipeWriteData {
@@ -94,7 +98,7 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
             public NamedPipeServerStream pipe;
             public NamedPipeData connect;
             public int offset;
-            public Byte[] writedata;
+            public byte[] writedata;
         };
 
 
@@ -126,14 +130,14 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
 
                 var read = new NamedPipeReadData(connect);
                 read.pipe = data.pipe;
-                read.readdata = new byte[InBufferSize];
-                read.state = null;
-                data.pipe.BeginRead(read.readdata, 0, InBufferSize, BeginReadCallback, read);
+                read.readThisTime = new byte[InBufferSize];
+                read.TotalSize = 0;
+                data.pipe.BeginRead(read.readThisTime, 0, InBufferSize, BeginReadCallback, read);
 
                 var write = new NamedPipeWriteData(connect);
                 write.pipe = data.pipe;
                 write.offset = 0;
-                write.writedata = Encoding.UTF8.GetBytes("+OK Accepted.\n");
+                write.writedata = CreateSendBytes("+OK Accepted.\n");
                 data.pipe.BeginWrite(write.writedata, write.offset, write.writedata.Length, BeginWriteCallback, write);
             }
         }
@@ -157,6 +161,8 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
             }
         }
 
+        private const int lengthOfSizeBytes = 4;
+
         private void BeginReadCallback(IAsyncResult ar) {
             var pd = (NamedPipeReadData)ar.AsyncState;
             if (pd.pipe != null) {
@@ -174,20 +180,54 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                     if(JavaClientClose!=null) JavaClientClose(this, new EventArgs());
                 }
                 else {
-
                     int bytesRead = pd.pipe.EndRead(ar);
                     if (bytesRead != 0) {
-                        // PutLog("[PIPE SERVER] Read: " + Encoding.UTF8.GetString(pd.readdata));
-                        var s = Encoding.UTF8.GetString(pd.readdata);
-                        if (ReadData != null) ReadData(s);
-                        // Debug.WriteLine(s.Substring(0, Math.Min(100, s.Length)));
-                    }
+                        if (pd.TotalSize == 0) {
+                            byte[] ts = pd.readThisTime.Take(lengthOfSizeBytes).Reverse().ToArray();
+                            pd.TotalSize = BitConverter.ToInt32(ts, 0);
+                            pd.readdata.AddRange(pd.readThisTime.Skip(lengthOfSizeBytes).Take(bytesRead - lengthOfSizeBytes).ToList());
+                        }
+                        else {
+                            pd.readdata.AddRange(pd.readThisTime.Take(bytesRead).ToList());
+                        }
+                        pd.readThisTime = new byte[0];
 
-                    var read = new NamedPipeReadData(connect);
-                    read.pipe = pd.pipe;
-                    read.readdata = new byte[InBufferSize];
-                    read.state = null;
-                    pd.pipe.BeginRead(read.readdata, 0, InBufferSize, BeginReadCallback, read);
+                        if (pd.readdata.Count == pd.TotalSize) {
+                            var s = Encoding.UTF8.GetString(pd.readdata.ToArray());
+                            if (ReadData != null) ReadData(s);
+                            var read = new NamedPipeReadData(connect);
+                            read.pipe = pd.pipe;
+                            read.readThisTime = new byte[InBufferSize];
+                            read.TotalSize = 0;
+                            pd.pipe.BeginRead(read.readThisTime, 0, InBufferSize, BeginReadCallback, read);
+                        }
+                        else {
+                            if (pd.readdata.Count >= pd.TotalSize) {
+                                // includes next data.
+                                byte[] ts = pd.readdata.Skip(pd.TotalSize).Take(lengthOfSizeBytes).Reverse().ToArray();
+                                byte[] next = new byte[pd.readdata.Count - pd.TotalSize - lengthOfSizeBytes];
+                                next = pd.readdata.Skip(pd.TotalSize + lengthOfSizeBytes).ToArray();
+                                pd.readdata.RemoveRange(pd.TotalSize, pd.readdata.Count - pd.TotalSize);
+
+                                var s = Encoding.UTF8.GetString(pd.readdata.ToArray());
+                                if (ReadData != null) ReadData(s);
+
+                                var readNext = new NamedPipeReadData(connect);
+                                readNext.pipe = pd.pipe;
+                                readNext.readThisTime = new byte[InBufferSize];
+                                readNext.TotalSize = BitConverter.ToInt32(ts, 0);
+                                readNext.readdata.AddRange(next);
+                                pd.pipe.BeginRead(readNext.readThisTime, 0, InBufferSize, BeginReadCallback, readNext);
+                                return;
+                            }
+                            else {
+                                pd.readThisTime = new byte[InBufferSize];
+                                pd.pipe.BeginRead(pd.readThisTime, 0, InBufferSize, BeginReadCallback, pd);
+                                return;
+                            }
+
+                        }
+                    }
                 }
             }
         }
