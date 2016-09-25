@@ -81,7 +81,7 @@ public class NamedPipeBackgroundRenderer {
         }
     }
 
-    private final int retryWaitMsForNamedPipeServerSearch = 3000;
+    private final int retryWaitMsForNamedPipeServerSearch = 5000;
     private final int retryWaitMsForWaitingServerStart = 10000;
 
     boolean namedPipeServerExists(String name){
@@ -100,11 +100,12 @@ public class NamedPipeBackgroundRenderer {
                     try {
                         Thread.sleep(retryWaitMsForNamedPipeServerSearch);
                     } catch (InterruptedException e) {
-                        // ignore.
+                        Thread.currentThread().interrupt();
                     }
                 }
             }catch(IOException iox){
-                // ignore.
+                // TODO: implement.
+                return false;
             }
         }
         return false;
@@ -154,12 +155,16 @@ public class NamedPipeBackgroundRenderer {
                 try{
                     Thread.sleep(retryWaitMsForWaitingServerStart);
                 }catch(InterruptedException e){
-                    //
+                    Thread.currentThread().interrupt();
                 }
 
             }
         }
         throw new TimeoutException("can't detect server process");
+    }
+
+    boolean isServerProcessAlive(ProcessCommandLineInfo serverInfo){
+        return getServerProcess(serverInfo.getName(), serverInfo.getProcessId()) != null;
     }
 
     void communicate(ParentInfo pi){
@@ -179,7 +184,7 @@ public class NamedPipeBackgroundRenderer {
         logger.infoLog("NamedPipeServer search start.");
         String namedPipeServerName = getServerName(pi);
         if(!namedPipeServerExists(namedPipeServerName, 20)){
-            if(getServerProcess(serverInfo.getName(), serverInfo.getProcessId()) == null){
+            if(!isServerProcessAlive(serverInfo)){
                 logger.infoLog("Server process was gone, While waiting NamedPipeServer Starts. Program will exit.");
                 return;
             }
@@ -190,13 +195,53 @@ public class NamedPipeBackgroundRenderer {
         }
         logger.infoLog("NamedPipeServer Detected.");
 
-        waitRequest(pi);
+        boolean firstTime = true;
+        while(true){
+            if(isServerProcessAlive(serverInfo)){
+                logger.infoLog("Server process was gone. Program will exit.");
+                break;
+            }
+            if(!firstTime){
+                boolean found = false;
+                logger.infoLog("Current process was closed by unknown reason. Waiting restart NamedPipeServer.");
+                for(int i = 0; i< 10; i++){
+                    if(namedPipeServerExists(namedPipeServerName, 12 * 2)){
+                        found = true;
+                        break;
+                    }
+                    if(!isServerProcessAlive(serverInfo)){
+                        found = false;
+                        break;
+                    }
+                }
+                if(!found){
+                    logger.infoLog("Server process closed or NamedPipeServer missing long time. Program will exit.");
+                    break;
+                }
+            }
 
+            try{
+                waitRequest(pi);
+            } catch( FileNotFoundException nex){
+                // Namedpipe detected but FileNotFoundException occurred.
+                logger.infoLog("error: NamedPipe Not Found.");
+                break;
+            } catch( IOException e){
+                logger.infoLog("error: IOException :" + e.getMessage());
+
+            } catch (Exception e){
+                e.printStackTrace();
+                logger.infoLog("error: Exception :" + e.getMessage());
+                break;
+            }
+            firstTime = false;
+        }
         logger.infoLog("Read loop end.");
     }
 
 
-    private void waitRequest(ParentInfo pi){
+    private void waitRequest(ParentInfo pi)
+        throws IOException{
         try(RandomAccessFile pipe = new RandomAccessFile("\\\\.\\pipe\\" + getServerName(pi), "rw")){
             byte[] sizeInfo = new byte[4];
             String data = "";
@@ -223,20 +268,13 @@ public class NamedPipeBackgroundRenderer {
                     }
                 }
             }catch(EOFException eofex){
-                // ioex.printStackTrace(); // may be connection closed.
+                System.out.println("Server may closed.");
             }catch(IOException ioex){
                 ioex.printStackTrace();
             }
 
-        } catch( FileNotFoundException nex){
-            // Namedpipe detected but FileNotFoundException occurred.
-            System.out.println("NamedPipe Not Found. Program will exit.");
-            return;
-        } catch( IOException e){
-            System.out.println("IOError.");
-            e.printStackTrace();
-        } catch (Exception e){
-            e.printStackTrace();
+        } finally{
+
         }
     }
 
