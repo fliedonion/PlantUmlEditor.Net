@@ -81,8 +81,8 @@
                 </TransformGroup>
             </Grid.RenderTransform>
             <Grid.RowDefinitions>
-                <RowDefinition Height="34*" MinHeight="28"/>
-                <RowDefinition Height="287*"/>
+                <RowDefinition Height="34" MinHeight="28"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <Button x:Name="configButton" Content="&#x2699;" 
