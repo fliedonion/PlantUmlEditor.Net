@@ -93,6 +93,7 @@
     <Compile Include="PlantUmlRender\IPlantUmlRender.cs" />
     <Compile Include="PlantUmlRender\PlantUmlNamedPipeRender.cs" />
     <Compile Include="PlantUmlRender\PlantUmlNamedPipeServer.cs" />
+    <Compile Include="PlantUmlRender\RenderResult.cs" />
     <Compile Include="Presenter.cs" />
     <Compile Include="PlantUmlRender\PlantUmlTcpClientRender.cs" />
     <Compile Include="WebBrowserBehavior.cs" />

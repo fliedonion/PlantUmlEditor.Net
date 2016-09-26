@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
     interface IPlantUmlRender {
-        string RenderRequest(string plantUmlSource);
+        RenderResult RenderRequest(string plantUmlSource);
+        void Initialize();
     }
 }

@@ -8,25 +8,31 @@ using System.Threading.Tasks;
 namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
     class PlantUmlNamedPipeRender : IPlantUmlRender {
 
+        public void Initialize() {
+            InitServer();
+        }
+
         internal PlantUmlNamedPipeRender() {
-            var s = Server;
+        }
+
+        private static void InitServer() {
+            if (server == null) {
+                server = new PlantUmlNamedPipeServer();
+                // server.RunClient();
+                server.StartServer();
+                server.JavaClientClose += (sender, args) => { server.StartServer(); };
+            }
         }
 
         private static PlantUmlNamedPipeServer server = null;
-
         private static PlantUmlNamedPipeServer Server {
             get {
-                if (server == null) {
-                    server = new PlantUmlNamedPipeServer();
-                    //server.RunClient();
-                    server.StartServer();
-                    server.JavaClientClose += (sender, args) => { server.StartServer(); };
-                }
+                InitServer();
                 return server;
             }
         }
 
-        public string RenderRequest(string plantUmlSource) {
+        public RenderResult RenderRequest(string plantUmlSource) {
 
             var t = FromNamedPipeServer(plantUmlSource);
             t.Wait();
@@ -34,13 +40,26 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
             return t.Result;
         }
 
-        private Task<string> FromNamedPipeServer(string plantUmlSource) {
+        private Task<RenderResult> FromNamedPipeServer(string plantUmlSource) {
 
-            var tcs = new TaskCompletionSource<string>();
-            Action<string> handler = s => { tcs.SetResult(s); };
+            var tcs = new TaskCompletionSource<RenderResult>();
+            Action<string> handler = s => {
+                                         if (tcs.Task.Status != TaskStatus.RanToCompletion &&
+                                                tcs.Task.Status != TaskStatus.WaitingForChildrenToComplete &&
+                                                tcs.Task.Status != TaskStatus.Canceled &&
+                                                tcs.Task.Status != TaskStatus.Faulted
+                                            ) {
+                                            var result = new RenderResult();
+                                            result.Status = RenderResult.RenderStatuses.Success;
+                                            result.Result = s;
+                                            tcs.SetResult(result);
+                                         } };
             Server.ReadData += handler;
             if (!Server.SendRenderRequest(plantUmlSource)) {
-                tcs.SetResult("Can't communicate java side");
+                var result = new RenderResult();
+                result.Status = RenderResult.RenderStatuses.CannotCommunicate;
+                result.Result = "Can't communicate java side";
+                tcs.SetResult(result);
                 Server.ReadData -= handler;
                 handler = null;
             }
@@ -51,6 +70,5 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                                     });
             return tcs.Task;
         }
-
     }
 }

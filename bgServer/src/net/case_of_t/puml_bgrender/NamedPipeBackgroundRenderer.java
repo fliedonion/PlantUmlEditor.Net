@@ -100,7 +100,8 @@ public class NamedPipeBackgroundRenderer {
     private final int retryCountNamedPipeBusy = 5;
     private final int retryWaitMsForNamedPipeBusy = 5000;
     private final int retryWaitMsForNamedPipeServerSearch = 5000;
-    private final int retryWaitMsForWaitingServerStart = 10000;
+    private final int retryCountWaitingServerStart = 100;
+    private final int retryWaitMsForWaitingServerStart = 3000;
 
     boolean namedPipeServerExists(String name){
         return namedPipeServerExists(name, 1);
@@ -163,7 +164,7 @@ public class NamedPipeBackgroundRenderer {
     private ProcessCommandLineInfo waitForServerProcessStart(ParentInfo pi)
         throws TimeoutException {
 
-        int retry = 30;
+        int retry = retryCountWaitingServerStart;
         while (retry > 0){
             retry--;
             ProcessCommandLineInfo info = getServerProcess(pi);

@@ -13,6 +13,16 @@ namespace CaseOfT.Net.PlantUMLClient {
         private readonly ObservableCollection<string> _history
             = new ObservableCollection<string>();
 
+        public Presenter() {
+            try {
+                CreateRender().Initialize();
+            }
+            catch (Exception ex) {
+                _test = ex.Message;
+            }
+        }
+
+
         private string _test;
         public string Test
         {
@@ -58,8 +68,11 @@ namespace CaseOfT.Net.PlantUMLClient {
 
             var thisText = _someText;
             new Task(() => {
-                var renderd = CreateRender().RenderRequest(_someText??"");
-                Test = renderd;
+                var rendered = CreateRender().RenderRequest(_someText??"");
+                if (rendered.Status == RenderResult.RenderStatuses.Success) {
+                    Test = rendered.Result;
+                }
+                // TODO: Implement other status.
             }).Start();
         }
 

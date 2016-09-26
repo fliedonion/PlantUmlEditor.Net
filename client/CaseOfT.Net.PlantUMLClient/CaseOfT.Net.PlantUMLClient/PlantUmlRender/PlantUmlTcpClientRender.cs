@@ -10,13 +10,23 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
     [Obsolete()]
     class PlantUmlTcpClientRender : IPlantUmlRender {
 
+        public void Initialize() {
+            PlantUmlTcpClientRender.port = 3000;
+        }
+
         private const string ipAddr = "127.0.0.1";
-        private int port = 3000;
+        private static int port;
 
-        public string RenderRequest(string plantUml) {
-            if (String.IsNullOrEmpty(plantUml)) return "";
+        public RenderResult RenderRequest(string plantUml) {
+            var result = new RenderResult();
+            result.Status = RenderResult.RenderStatuses.Success;
 
-            using (var tcp = new TcpClient(ipAddr, port)) {
+            if (String.IsNullOrEmpty(plantUml)) {
+                result.Result = "";
+                return result;
+            }
+
+            using (var tcp = new TcpClient(ipAddr, PlantUmlTcpClientRender.port)) {
                 if (tcp.Connected) {
                     var ns = tcp.GetStream();
                     ns.ReadTimeout = 10000;
@@ -45,9 +55,12 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                     string returnValue = Encoding.UTF8.GetString(ms.ToArray());
                     ms.Close();
                     ns.Close();
-                    return returnValue;
+                    result.Result = returnValue;
+
+                    return result;
                 }else {
-                    return "";
+                    result.Status = RenderResult.RenderStatuses.CannotCommunicate;
+                    return result;
                 }
             }
 

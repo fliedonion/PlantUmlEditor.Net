@@ -142,7 +142,8 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
         }
 
 
-
+        private bool isAlreadyConnected = false;
+        private string que = "";
 
         internal void StartServer() {
             if (pipeServer != null /* && pipeServer.IsConnected */) {
@@ -166,6 +167,8 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
             connect.pipe = pipeServer;
 
             PutLog("[PIPE SERVER] thread created");
+            isAlreadyConnected = false;
+            que = "";
             pipeServer.BeginWaitForConnection(BeginWaitForConnectionCallback, connect);
         }
 
@@ -202,6 +205,9 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
                     if (pd.offset + OutBufferSize < pd.writedata.Length) {
                         pd.offset += OutBufferSize;
                         pd.pipe.BeginWrite(pd.writedata, pd.offset, Math.Min(OutBufferSize, (pd.writedata.Length - pd.offset)), BeginWriteCallback, pd);
+                    }
+                    else {
+                        isAlreadyConnected = true;
                     }
                 }
                 catch (IOException ex) {

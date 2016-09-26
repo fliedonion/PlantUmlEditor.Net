@@ -92,7 +92,11 @@ namespace CaseOfT.Net.PlantUMLClient {
 
         private bool SaveToSvg(string saveFilename) {
             try {
-                var svg = CreateRender().RenderRequest(sourceEditor.Text);
+                var result = CreateRender().RenderRequest(sourceEditor.Text);
+                if (result.Status != RenderResult.RenderStatuses.Success) {
+                    throw new Exception("ローカルレンダリングサーバーと通信できませんでした。\r\n");
+                }
+                var svg = result.Result;
                 return ExportToEmf(svg, saveFilename);
             }
             catch (Exception ex) {
