@@ -28,7 +28,7 @@ namespace CaseOfT.Net.PlantUMLClient {
         {
             get { return _test; }
             set { _test = value;
-                RaisePropertyChangedEvent("Test");
+                RaisePropertyChangedEvent();
             }
         }
 
@@ -38,7 +38,7 @@ namespace CaseOfT.Net.PlantUMLClient {
             set
             {
                 _someText = value;
-                RaisePropertyChangedEvent("SomeText");
+                RaisePropertyChangedEvent();
             }
         }
 
