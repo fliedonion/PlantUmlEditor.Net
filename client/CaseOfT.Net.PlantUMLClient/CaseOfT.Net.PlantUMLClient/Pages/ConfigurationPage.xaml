@@ -41,6 +41,13 @@
     </Page.Triggers>
 
     <Grid x:Name="grid" RenderTransformOrigin="0.5,0.5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="27*"/>
+            <RowDefinition Height="36*"/>
+            <RowDefinition Height="29*"/>
+            <RowDefinition Height="34*"/>
+            <RowDefinition Height="174*"/>
+        </Grid.RowDefinitions>
         <Grid.RenderTransform>
             <TransformGroup>
                 <ScaleTransform/>
@@ -59,6 +66,12 @@
         </Grid.LayoutTransform>
 
         <Button x:Name="button" Content="&lt;-" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <TextBox x:Name="JavaLocation" HorizontalAlignment="Left" Height="23" Margin="55,3.333,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="209" Grid.Row="1" TextChanged="JavaLocation_TextChanged"/>
+        <TextBox x:Name="GraphvizLocation" HorizontalAlignment="Left" Height="23" Margin="55,6.333,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="209" Grid.Row="2" TextChanged="GraphvizLocation_TextChanged"/>
+        <TextBox x:Name="InkScapeLocation" HorizontalAlignment="Left" Height="23" Margin="55,5,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="209" Grid.Row="3" TextChanged="InkScapeLocation_TextChanged"/>
+
+        <TextBox x:Name="JarLocation" HorizontalAlignment="Left" Height="23" Margin="55,5,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="209" Grid.Row="4" TextChanged="JarLocation_OnTextChangedLocation_TextChanged"/>
+
 
     </Grid>
 </Page>

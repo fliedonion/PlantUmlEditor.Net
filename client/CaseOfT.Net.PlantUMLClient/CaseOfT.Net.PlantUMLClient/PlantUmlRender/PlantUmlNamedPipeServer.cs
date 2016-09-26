@@ -105,8 +105,8 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
         private Process currentProcess;
 
         internal void RunClient() {
-            var java = @"C:\ProgramData\Oracle\Java\javapath\java.exe";
-            var jar = @"D:\repos\PlantUmlEditor.Net\bgServer\out\artifacts\net_case_of_t_plant_uml_editor_net_bgrender_jar\net.case-of-t.plant-uml-editor-net-bgrender.jar";
+            var java = LibLocations.Java + "\\java.exe";
+            var jar = LibLocations.Jar;
 
             var p = new Process();
             p.StartInfo.UseShellExecute = false;
