@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interactivity;
 
-namespace CaseOfT.Net.PlantUMLClient {
+namespace CaseOfT.Net.PlantUMLClient.Behaviors {
     public sealed class AvalonEditBehaviour : Behavior<TextEditor> {
         public static readonly DependencyProperty CodeProperty =
             DependencyProperty.Register("Code", typeof(string), typeof(AvalonEditBehaviour),

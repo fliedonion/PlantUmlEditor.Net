@@ -81,7 +81,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AvalonEditBehaviour.cs" />
+    <Compile Include="Behaviors\AvalonEditBehaviour.cs" />
     <Compile Include="Pages\ConfigurationPage.xaml.cs">
       <DependentUpon>ConfigurationPage.xaml</DependentUpon>
     </Compile>
@@ -96,7 +96,7 @@
     <Compile Include="PlantUmlRender\RenderResult.cs" />
     <Compile Include="Presenter.cs" />
     <Compile Include="PlantUmlRender\PlantUmlTcpClientRender.cs" />
-    <Compile Include="WebBrowserBehavior.cs" />
+    <Compile Include="Behaviors\WebBrowserBehavior.cs" />
     <Page Include="Pages\ConfigurationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

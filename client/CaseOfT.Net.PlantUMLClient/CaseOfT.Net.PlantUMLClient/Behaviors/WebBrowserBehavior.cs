@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Interactivity;
+using System.Windows.Navigation;
 
-namespace CaseOfT.Net.PlantUMLClient {
-    class WebBrowserBehavior{
+namespace CaseOfT.Net.PlantUMLClient.Behaviors {
+    class WebBrowserBehavior : Behavior<WebBrowser> {
         public static readonly DependencyProperty HtmlProperty = DependencyProperty.RegisterAttached(
                 "Html",
                 typeof(string),
@@ -33,7 +35,24 @@ namespace CaseOfT.Net.PlantUMLClient {
                 }
                 webBrowser.NavigateToString(newValue);
             }
-                
         }
+
+        protected override void OnAttached() {
+            base.OnAttached();
+            if (AssociatedObject != null)
+                AssociatedObject.Navigating += AssociatedObjectOnNavigating;
+        }
+        protected override void OnDetaching() {
+            base.OnDetaching();
+            if (AssociatedObject != null)
+                AssociatedObject.Navigating -= AssociatedObjectOnNavigating;
+        }
+
+        private void AssociatedObjectOnNavigating(object sender, NavigatingCancelEventArgs e) {
+            if (e.Uri != null) {
+                e.Cancel = true;
+            }
+        }
+
     }
 }

@@ -187,5 +187,6 @@ namespace CaseOfT.Net.PlantUMLClient {
                 lastOpenUmlDirectory = new FileInfo(filename).Directory.FullName;
             }
         }
+
     }
 }

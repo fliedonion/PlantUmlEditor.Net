@@ -7,6 +7,7 @@
       xmlns:ViewModel="clr-namespace:CaseOfT.Net.PlantUMLClient"
       xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      xmlns:behaviors="clr-namespace:CaseOfT.Net.PlantUMLClient.Behaviors"
       mc:Ignorable="d" 
       d:DesignHeight="350" d:DesignWidth="525"
       Title="Editor">
@@ -110,7 +111,7 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <i:Interaction.Behaviors>
-                    <local:AvalonEditBehaviour Code="{Binding SomeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <behaviors:AvalonEditBehaviour Code="{Binding SomeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </i:Interaction.Behaviors>
             </avalonEdit:TextEditor>
 
@@ -120,8 +121,8 @@
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center"/>
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="34*" MinHeight="28"/>
-                <RowDefinition Height="287*"/>
+                <RowDefinition Height="34" MinHeight="28"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Button x:Name="renderButton" 
                     Content="&#x1F503;"
@@ -129,8 +130,13 @@
                     Width="24" Height="24"
                     HorizontalAlignment="Right" VerticalAlignment="Top" 
                     Command="{Binding RenderTextCommand}" Margin="0,0,10,0"/>
-            <WebBrowser Grid.Row="1" x:Name="browser" Margin="0,0,0,0" local:WebBrowserBehavior.Html="{Binding Test}"/>
+            <WebBrowser Grid.Row="1" x:Name="browser" Margin="0,0,0,0" behaviors:WebBrowserBehavior.Html="{Binding Test}">
+                <i:Interaction.Behaviors>
+                    <behaviors:WebBrowserBehavior />
+                </i:Interaction.Behaviors>
+            </WebBrowser>
             <Button x:Name="exportEmfButton" Content="export EMF ..." HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top" Width="90" Click="exportEmfButton_Click"/>
         </Grid>
     </Grid>
 </Page>
+
