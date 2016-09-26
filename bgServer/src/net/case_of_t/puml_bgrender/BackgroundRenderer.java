@@ -1,8 +1,12 @@
-import net.sourceforge.plantuml.FileFormat;
-import net.sourceforge.plantuml.FileFormatOption;
-import net.sourceforge.plantuml.SourceStringReader;
+package net.case_of_t.puml_bgrender;
 
-import java.io.*;
+import net.case_of_t.lib.puml.PlantUmlWrapper;
+
+import java.io.PrintStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.DataInputStream;
+import java.io.EOFException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -11,9 +15,9 @@ import java.nio.charset.Charset;
 /**
  * BackgroundRenderer render PlantUml text to SVG through TCP.
  *
- * Created by Takahiro on 2016/07/27.
+ * this is obsolete.
  */
-public class BackgroundRenderer {
+class BackgroundRenderer {
 
     // please run under Command prompt.
     public static void main(String[] args) {
@@ -67,3 +71,4 @@ public class BackgroundRenderer {
         }
     }
 }
+

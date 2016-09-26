@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: NamedPipeBackgroundRenderer
+Class-Path: plantuml.jar
+Main-Class: net.case_of_t.puml_bgrender.NamedPipeBackgroundRenderer
 

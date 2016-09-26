@@ -18,7 +18,7 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
             get {
                 if (server == null) {
                     server = new PlantUmlNamedPipeServer();
-                    server.RunClient();
+                    //server.RunClient();
                     server.StartServer();
                     server.JavaClientClose += (sender, args) => { server.StartServer(); };
                 }

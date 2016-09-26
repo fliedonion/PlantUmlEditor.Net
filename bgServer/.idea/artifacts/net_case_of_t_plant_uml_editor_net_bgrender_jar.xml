@@ -1,8 +1,10 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="net.case-of-t.plant-uml-editor-net-bgrender:jar">
+  <artifact name="net.case-of-t.plant-uml-editor-net-bgrender:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/net_case_of_t_plant_uml_editor_net_bgrender_jar</output-path>
-    <root id="archive" name="net.case-of-t.plant-uml-editor-net-bgrender.jar">
-      <element id="module-output" name="net.case-of-t.plant-uml-editor-net-bgrender" />
+    <root id="root">
+      <element id="archive" name="net.case-of-t.plant-uml-editor-net-bgrender.jar">
+        <element id="module-output" name="net.case-of-t.plant-uml-editor-net-bgrender" />
+      </element>
       <element id="library" level="project" name="plantuml" />
     </root>
   </artifact>

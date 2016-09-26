@@ -1,7 +1,13 @@
+package net.case_of_t.puml_bgrender;
+
+import net.case_of_t.lib.puml.PlantUmlWrapper;
 import net.case_of_t.lib.win.ProcessCollector;
 import net.case_of_t.lib.win.ProcessCommandLineInfo;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -10,8 +16,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 public class NamedPipeBackgroundRenderer {
+
+    private final Logger logger = Logger.getLogger("Cot-NPBG");
 
     // VSDebug=true / false : true, if NamedPipeServer run under VSDebugger.
     // processId=<pid of namedpipe server>  : process id of NamedPipeServer.
@@ -22,8 +31,11 @@ public class NamedPipeBackgroundRenderer {
     // ~.jar ProcessId=<pid> processName=CaseOfT.Net.PlantUMLClient.exe
 
     public static void main(String[] args){
+        final Logger logger = Logger.getLogger("Cot-NPBG-main");
+
         if(args.length == 0){
             System.out.println("there are no arguments.");
+            logger.severe("there are no arguments.");
         }else{
 
             ParentInfo pi = new ParentInfo();
@@ -32,19 +44,23 @@ public class NamedPipeBackgroundRenderer {
 
                 if(splitted.length == 2){
                     if(!pi.applyField(splitted[0], splitted[1])){
-                        System.err.println("unknown param or invalid value :" + splitted[0]);
+                        logger.warning("unknown param or invalid value :" + splitted[0]);
                     }
                 }else{
-                    System.err.println("unknown param" + arg);
+                    logger.warning("unknown param" + arg);
                 }
             }
 
+            if(pi.isVsDebug()) {
+                logger.info("option: VsDebug specified.");
+            }
+
             if(!pi.isVsDebug() && pi.getProcessId() == -1){
-                System.err.println("processId is not specified.");
+                logger.severe("option: processId is not specified.");
                 return;
             }
             if(!pi.isVsDebug() && pi.getProcessName().equals("")){
-                System.err.println("processName is not specified.");
+                logger.severe("option: processName is not specified.");
                 return;
             }
 
@@ -72,7 +88,7 @@ public class NamedPipeBackgroundRenderer {
         return true;
     }
 
-    String getServerName(ParentInfo pi){
+    private String getServerName(ParentInfo pi){
         if(pi.isVsDebug() && pi.getProcessId() == -1){
             return serverNameBase;
         }
@@ -88,7 +104,7 @@ public class NamedPipeBackgroundRenderer {
         return namedPipeServerExists(name, 1);
     }
 
-    boolean namedPipeServerExists(String name, int retry){
+    private boolean namedPipeServerExists(String name, int retry){
         Path dir = FileSystems.getDefault().getPath("\\\\.\\pipe\\");
         while(retry > 0){
             retry--;
@@ -111,14 +127,14 @@ public class NamedPipeBackgroundRenderer {
         return false;
     }
 
-    ProcessCommandLineInfo getServerProcess(String processName, int processId){
+    private ProcessCommandLineInfo getServerProcess(String processName, int processId){
         ProcessCollector collector = new ProcessCollector();
         List<ProcessCommandLineInfo> list =  collector.collectTargetProcessWhichNameIsAndProcessIdIs(processName, processId);
         if(list.size()==1) return list.get(0);
         return null;
     }
 
-    ProcessCommandLineInfo getServerProcess(String processName)
+    private ProcessCommandLineInfo getServerProcess(String processName)
         throws RuntimeException{
 
         ProcessCollector collector = new ProcessCollector();
@@ -133,7 +149,7 @@ public class NamedPipeBackgroundRenderer {
         return null;
     }
 
-    ProcessCommandLineInfo getServerProcess(ParentInfo pi){
+    private ProcessCommandLineInfo getServerProcess(ParentInfo pi){
         String procName = pi.isVsDebug() && pi.getProcessName().equals("") ? debugProcessName : pi.getProcessName();
         if(pi.isVsDebug() && pi.getProcessId() == -1){
             return getServerProcess(procName);
@@ -142,7 +158,7 @@ public class NamedPipeBackgroundRenderer {
         }
     }
 
-    ProcessCommandLineInfo waitForServerProcessStart(ParentInfo pi)
+    private ProcessCommandLineInfo waitForServerProcessStart(ParentInfo pi)
         throws TimeoutException {
 
         int retry = 30;
@@ -163,47 +179,46 @@ public class NamedPipeBackgroundRenderer {
         throw new TimeoutException("can't detect server process");
     }
 
-    boolean isServerProcessAlive(ProcessCommandLineInfo serverInfo){
+    private boolean isServerProcessAlive(ProcessCommandLineInfo serverInfo){
         return getServerProcess(serverInfo.getName(), serverInfo.getProcessId()) != null;
     }
 
-    void communicate(ParentInfo pi){
-        Logger logger = new Logger(1);
+    private void communicate(ParentInfo pi){
         ProcessCommandLineInfo serverInfo = null;
         try {
-            logger.infoLog("Wait server start.");
+            logger.info("Wait server start.");
             serverInfo = waitForServerProcessStart(pi);
 
         }catch(TimeoutException ex){
-            logger.infoLog(ex.getMessage());
-            System.err.println("Server not found.");
+            logger.severe("Could not found Server : TimeoutException");
+            logger.severe(ex.getMessage());
             return;
         }
-        logger.infoLog(String.format("server process detected %s : %d.", serverInfo.getName(), serverInfo.getProcessId()));
+        logger.info(String.format("server process detected %s : %d.", serverInfo.getName(), serverInfo.getProcessId()));
 
-        logger.infoLog("NamedPipeServer search start.");
+        logger.info("NamedPipeServer search start.");
         String namedPipeServerName = getServerName(pi);
         if(!namedPipeServerExists(namedPipeServerName, 20)){
             if(!isServerProcessAlive(serverInfo)){
-                logger.infoLog("Server process was gone, While waiting NamedPipeServer Starts. Program will exit.");
+                logger.warning("Server process was gone, While waiting NamedPipeServer Starts. Program will exit.");
                 return;
             }
 
             // todo: retry waiting namedpipeserver, if need.
-            logger.infoLog("Can't detect NamedPipeServer Started. Program will exit.");
+            logger.info("Can't detect NamedPipeServer Started. Program will exit.");
             return;
         }
-        logger.infoLog("NamedPipeServer Detected.");
+        logger.info("NamedPipeServer Detected.");
 
         boolean firstTime = true;
         while(true){
             if(!isServerProcessAlive(serverInfo)){
-                logger.infoLog("Server process was gone. Program will exit.");
+                logger.warning("Server process was gone. Program will exit.");
                 break;
             }
             if(!firstTime){
                 boolean found = false;
-                logger.infoLog("Current process was closed by unknown reason. Waiting restart NamedPipeServer.");
+                logger.info("Current process was closed by unknown reason. Waiting restart NamedPipeServer.");
                 for(int i = 0; i< 10; i++){
                     if(namedPipeServerExists(namedPipeServerName, 12 * 2)){
                         found = true;
@@ -215,7 +230,7 @@ public class NamedPipeBackgroundRenderer {
                     }
                 }
                 if(!found){
-                    logger.infoLog("Server process closed or NamedPipeServer missing long time. Program will exit.");
+                    logger.warning("Server process closed or NamedPipeServer missing long time. Program will exit.");
                     break;
                 }
             }
@@ -224,19 +239,19 @@ public class NamedPipeBackgroundRenderer {
                 waitRequest(pi);
             } catch( FileNotFoundException nex){
                 // Namedpipe detected but FileNotFoundException occurred.
-                logger.infoLog("error: NamedPipe Not Found.");
+                logger.warning("error: NamedPipe Not Found.");
                 break;
             } catch( IOException e){
-                logger.infoLog("error: IOException :" + e.getMessage());
+                logger.warning("error: IOException :" + e.getMessage());
 
             } catch (Exception e){
                 e.printStackTrace();
-                logger.infoLog("error: Exception :" + e.getMessage());
+                logger.warning("error: Exception :" + e.getMessage());
                 break;
             }
             firstTime = false;
         }
-        logger.infoLog("Read loop end.");
+        logger.info("Read loop end.");
     }
 
 
@@ -244,7 +259,6 @@ public class NamedPipeBackgroundRenderer {
         throws IOException{
         try(RandomAccessFile pipe = new RandomAccessFile("\\\\.\\pipe\\" + getServerName(pi), "rw")){
             byte[] sizeInfo = new byte[4];
-            String data = "";
             try{
                 while(true) {
                     pipe.readFully(sizeInfo);
@@ -253,7 +267,7 @@ public class NamedPipeBackgroundRenderer {
                     if(size > 0) {
                         byte[] reqBytes = new byte[size];
                         pipe.readFully(reqBytes);
-                        data = new String(reqBytes, Charset.forName("UTF-8"));
+                        String data = new String(reqBytes, Charset.forName("UTF-8"));
 
                         if(data.equals("+OK Accepted.\n")){
                             System.out.println("Receive communicate message.");
@@ -264,32 +278,32 @@ public class NamedPipeBackgroundRenderer {
                             pipe.write(resBytes);
                         }
                     }else{
-                        System.out.println("size is 0. skip.");
+                        logger.fine("size is 0. skips.");
+                    }
+                    if(!isParentAlive(pi)){
+                        return;
                     }
                 }
             }catch(EOFException eofex){
-                System.out.println("Server may closed.");
+                logger.info("EOFException:");
+                logger.info("Server may closed.");
             }catch(IOException ioex){
+                logger.warning("IOException:");
                 ioex.printStackTrace();
             }
-
         } finally{
-
         }
     }
 
-
-
     private void obsoleteCode() throws Exception{
-        Logger logger = new Logger(1);
         RandomAccessFile pipe = null;
         String namedPipeServerName = serverNameBase;
         try {
-            logger.infoLog("NamedPipeServer Detected.");
+            logger.info("NamedPipeServer Detected.");
             pipe = new RandomAccessFile("\\\\.\\pipe\\" + namedPipeServerName, "rw");
-            logger.infoLog("Pipe Open Succeed.");
+            logger.info("Pipe Open Succeed.");
 
-            logger.infoLog("Read loop start.");
+            logger.info("Read loop start.");
 
             // byte[] sizeInfo = new byte[4];
             // try{
@@ -328,11 +342,11 @@ public class NamedPipeBackgroundRenderer {
                     echoResponse += "\n" + pipe.readLine();
                 }
                 if(echoResponse == null){
-                    logger.infoLog("Server is closed.");
+                    logger.info("Server is closed.");
                     // todo: if serverProcess alive, waiting namedpipeserver again and try reconnect.
                     break;
                 }
-                logger.debugLog("Response: " + echoResponse);
+                logger.fine("Response: " + echoResponse);
                 if(echoResponse.equals("<EXIT>")){
                     break;
                 }
