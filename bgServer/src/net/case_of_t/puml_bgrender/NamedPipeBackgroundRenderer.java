@@ -97,6 +97,8 @@ public class NamedPipeBackgroundRenderer {
         }
     }
 
+    private final int retryCountNamedPipeBusy = 5;
+    private final int retryWaitMsForNamedPipeBusy = 5000;
     private final int retryWaitMsForNamedPipeServerSearch = 5000;
     private final int retryWaitMsForWaitingServerStart = 10000;
 
@@ -211,6 +213,7 @@ public class NamedPipeBackgroundRenderer {
         logger.info("NamedPipeServer Detected.");
 
         boolean firstTime = true;
+        int retryForBusy = retryCountNamedPipeBusy;
         while(true){
             if(!isServerProcessAlive(serverInfo)){
                 logger.warning("Server process was gone. Program will exit.");
@@ -237,10 +240,22 @@ public class NamedPipeBackgroundRenderer {
 
             try{
                 waitRequest(pi);
+                retryForBusy = retryCountNamedPipeBusy;
             } catch( FileNotFoundException nex){
                 // Namedpipe detected but FileNotFoundException occurred.
-                logger.warning("error: NamedPipe Not Found.");
-                break;
+                // perhaps, error is `all pipe instances are busy`.
+                if(retryForBusy <= 0){
+                    break;
+                }
+                try{
+                    retryForBusy--;
+                    Thread.sleep(retryWaitMsForNamedPipeBusy);
+                    logger.info(String.format("maybe all pipe instances are busy, wait. ( %d / %d ) ", retryForBusy, retryCountNamedPipeBusy));
+                }catch(InterruptedException nexiex){
+                    Thread.currentThread().interrupt();
+                    logger.warning("named pipe busy wait Interrupted.");
+                    break;
+                }
             } catch( IOException e){
                 logger.warning("error: IOException :" + e.getMessage());
 
