@@ -105,8 +105,10 @@ namespace CaseOfT.Net.PlantUMLClient.PlantUmlRender {
         private Process currentProcess;
 
         internal void RunClient() {
-            var java = LibLocations.Java + "\\java.exe";
-            var jar = LibLocations.Jar;
+            var locations = new LibLocations();
+
+            var java = locations.Java + "\\java.exe";
+            var jar = locations.Jar;
 
             var p = new Process();
             p.StartInfo.UseShellExecute = false;

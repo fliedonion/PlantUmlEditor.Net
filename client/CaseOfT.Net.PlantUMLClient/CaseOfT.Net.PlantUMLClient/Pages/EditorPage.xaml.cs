@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+using CaseOfT.Net.PlantUMLClient.ViewModel;
 
 namespace CaseOfT.Net.PlantUMLClient {
     /// <summary>
@@ -26,6 +27,9 @@ namespace CaseOfT.Net.PlantUMLClient {
     public partial class Editor : Page {
         public Editor() {
             InitializeComponent();
+
+            DataContext = ApplicationViewModels.EditorPagePresenter;
+
             using (var xshd_stream = File.OpenRead("plantUml.xshd"))
             using (var xshd_reader = new XmlTextReader(xshd_stream)) {
                 sourceEditor.SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(xshd_reader, ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance);
@@ -121,15 +125,16 @@ namespace CaseOfT.Net.PlantUMLClient {
             }
         }
 
-        private string InkScapePath = LibLocations.InkScape;
         private const string InkScapeArgFormat = @" ""{0}"" --export-emf=""{1}""";
 
         private Tuple<int, string, string> CallLinkScape(string tempSvgFile, string saveFilename) {
+            // TODO: get from Model
+            var locations = new LibLocations();
 
             try {
                 string args = string.Format(InkScapeArgFormat, tempSvgFile, saveFilename);
 
-                var pinfo = new ProcessStartInfo(InkScapePath, args);
+                var pinfo = new ProcessStartInfo(locations.InkScape, args);
                 pinfo.UseShellExecute = false;
                 pinfo.CreateNoWindow = false;
                 pinfo.RedirectStandardOutput = true;

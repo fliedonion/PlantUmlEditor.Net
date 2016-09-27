@@ -55,9 +55,6 @@
             <BeginStoryboard Storyboard="{StaticResource StartAnimation}"/>
         </EventTrigger>
     </Page.Triggers>
-    <Page.DataContext>
-        <ViewModel:Presenter />
-    </Page.DataContext>
     <Grid x:Name="grid1" RenderTransformOrigin="0.5,0.5">
         <Grid.RenderTransform>
             <TransformGroup>

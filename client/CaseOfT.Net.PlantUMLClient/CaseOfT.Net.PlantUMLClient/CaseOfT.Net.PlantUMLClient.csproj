@@ -98,6 +98,7 @@
     <Compile Include="Presenter.cs" />
     <Compile Include="PlantUmlRender\PlantUmlTcpClientRender.cs" />
     <Compile Include="Behaviors\WebBrowserBehavior.cs" />
+    <Compile Include="ViewModel\ApplicationViewModels.cs" />
     <Page Include="Pages\ConfigurationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

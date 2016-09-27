@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CaseOfT.Net.PlantUMLClient {
     public class LibLocations {
 
-        static LibLocations() {
+        public LibLocations() {
             jar = Properties.Settings.Default.JarPath ?? @"D:\repos\PlantUmlEditor.Net\bgServer\out\artifacts\net_case_of_t_plant_uml_editor_net_bgrender_jar\net.case-of-t.plant-uml-editor-net-bgrender.jar";
             java = Properties.Settings.Default.JavaPath ?? @"C:\ProgramData\Oracle\Java\javapath\java.exe";
             inkScape = Properties.Settings.Default.InkScapePath ?? @"c:\Program Files\Inkscape\inkscape.exe";
@@ -20,7 +20,7 @@ namespace CaseOfT.Net.PlantUMLClient {
         private static string inkScape;
         private static string graphViz;
 
-        public static string Java {
+        public string Java {
             get { return java; }
             set {
                 java = value;
@@ -30,7 +30,7 @@ namespace CaseOfT.Net.PlantUMLClient {
                 }
             }
         }
-        public static string InkScape {
+        public string InkScape {
             get { return inkScape;}
             set {
                 inkScape = value;
@@ -40,7 +40,7 @@ namespace CaseOfT.Net.PlantUMLClient {
                 }
             }
         }
-        public static string GraphViz {
+        public string GraphViz {
             get { return graphViz; }
             set {
                 graphViz = value;
@@ -51,7 +51,7 @@ namespace CaseOfT.Net.PlantUMLClient {
             }
         }
 
-        public static string Jar {
+        public string Jar {
             get { return jar; }
             set {
                 jar = value;
@@ -62,13 +62,13 @@ namespace CaseOfT.Net.PlantUMLClient {
             }
         }
 
-        public static bool JavaExists() {
+        public bool JavaExists() {
             return File.Exists(Path.Combine(Java, "javaw.exe"));
         }
-        public static bool InkScapeExists() {
+        public bool InkScapeExists() {
             return File.Exists(InkScape);
         }
-        public static bool GraphVizExists() {
+        public bool GraphVizExists() {
             return File.Exists(GraphViz);
         }
 
